@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /opt/mn
-DUMP="/tmp/project_$(date +%d%b%Y_%H%M).txt"
+DUMP="/tmp/project_$(TZ='Europe/Moscow' date +%d%b%Y_%H%M).txt"
 
 echo "===== СТРУКТУРА ПРОЕКТА =====" > "$DUMP"
 find . -type f \
