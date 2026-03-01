@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-03-01 14:25 — ГОТОВО: Промпт 8 — Финальная валидация Дня 1 ✅
+Что сделано:
+- Проверена структура /opt/mn/ (shared/, backups/, avito-bot/, crm-core/)
+- 10 JSON-конфигов на месте, templates (договор + логотип) на месте
+- Изоляция: mn-avito не видит crm-core, mn-crm не видит avito-bot, shared читается
+- Сервисы запущены, health ОК (оба version=0.1.0)
+- bot.db: 7 таблиц, WAL; crm.db: 8 таблиц, WAL
+- Outbox-схемы идентичны (aggregate_key, idempotency_key, status, attempts)
+- .gitignore на месте, .env не в git
+- logs/ директории на месте
+- 17 коммитов в git
+
+Результат: 16/16 ✅ — День 1 полностью завершён
+Следующий: Заполнение .env (вручную), генерация internal keys, День 2
+
+---
+
 ## 2026-03-01 — ГОТОВО: Промпт 7 — База данных CRM ✅
 Что сделано:
 - scripts/init_db.py — 8 таблиц (clients, employees, history, tasks, onboarding_documents, processed_keys, outbox, drip_events)
