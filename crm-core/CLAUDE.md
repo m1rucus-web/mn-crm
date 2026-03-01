@@ -148,6 +148,15 @@ new → contacted → cp → contract → payment → onboarding → active
 
 ---
 
+## ПРАВИЛО: worklog после каждого промпта
+После КАЖДОГО выполненного промпта — обязательно:
+1. Добавить запись в `worklog.md` (новые записи сверху)
+2. `git add worklog.md progress.md`
+3. `git commit` с осмысленным сообщением
+4. `git push`
+
+---
+
 ## ЗАПРЕЩЕНО
 - Прямой доступ к bot.db
 - DELETE в SQLite для бизнес-сущностей (clients, tasks) — только soft delete
