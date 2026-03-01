@@ -2,7 +2,8 @@
 Последнее обновление: 2026-03-01
 
 ## Текущий шаг
-➡️ Промпт 7 — База данных CRM
+✅ Промпт 7 — База данных CRM — ГОТОВО
+➡️ Промпт 8 — Финальная валидация Дня 1
 
 ## Чеклист Фазы 1
 
@@ -10,10 +11,10 @@
 - [x] → см. avito-bot/progress.md (промпты 1-3 выполнены)
 
 ### 1.1 База данных
-- [ ] 1.1.1 Создать scripts/init_db.py
-- [ ] 1.1.2 Создать crm.db со всеми таблицами (clients, employees, history, tasks, onboarding_documents, processed_keys, outbox, drip_events)
-- [ ] 1.1.3 Проверить PRAGMA WAL + busy_timeout
-- [ ] 1.1.4 Проверить все индексы (включая UNIQUE на inn)
+- [x] 1.1.1 Создать scripts/init_db.py ✅
+- [x] 1.1.2 Создать crm.db со всеми таблицами (8 таблиц) ✅
+- [x] 1.1.3 Проверить PRAGMA WAL + busy_timeout ✅
+- [x] 1.1.4 Проверить все индексы (12 индексов, включая UNIQUE на inn) ✅
 - [ ] 1.1.5 seed_test_data.py (тестовые данные для разработки)
 
 ### 1.2 Приём лидов (POST /api/v1/leads)

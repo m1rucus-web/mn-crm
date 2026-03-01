@@ -4,6 +4,17 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: Промпт 7 — База данных CRM ✅
+Что сделано:
+- scripts/init_db.py — 8 таблиц (clients, employees, history, tasks, onboarding_documents, processed_keys, outbox, drip_events)
+- 12 индексов (включая UNIQUE idx_clients_inn_unique)
+- PRAGMA journal_mode=WAL, busy_timeout=5000
+- src/db.py — SQLAlchemy async engine + session factory (аналог avito-bot)
+- UNIQUE(source, source_id) на clients — для UPSERT двухэтапной передачи лидов
+Следующий: Промпт 8 — Финальная валидация Дня 1
+
+---
+
 ## 2026-03-01 13:36 — ГОТОВО: Промпт 5 — venv + FastAPI-каркас CRM ✅
 Что сделано:
 - Создан venv (Python 3.12.3)
