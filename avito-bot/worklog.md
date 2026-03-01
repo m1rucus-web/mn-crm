@@ -14,6 +14,8 @@
 - src/__init__.py, src/settings.py (pydantic-settings), src/main.py (FastAPI + loguru + health)
 - Исправлены права на logs/ (были root → mn-avito)
 - Health проверен: {"service":"avito-bot","status":"ok","version":"0.1.0"}
+- Добавлена секция «Логирование» в CLAUDE.md обоих сервисов
+Коммиты: 33a4b72, 65a4be5
 Следующий: Промпт 5 — venv + FastAPI-каркас для CRM
 
 ---
