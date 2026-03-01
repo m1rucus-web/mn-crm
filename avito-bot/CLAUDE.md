@@ -148,3 +148,9 @@ Systemd: `mn-avito-bot.service`
 - DELETE в SQLite (только soft delete через статусы)
 - Docker, Kubernetes, GraphQL, микрофронтенды
 - Пропускать записи в worklog.md и progress.md
+
+## Логирование
+- После КАЖДОГО шага из progress.md — обновить worklog.md (что сделал, результат)
+- git add + commit после каждого шага
+- git push — после каждого ПРОМПТА (не после каждого шага)
+- Формат записи: "### Шаг X.X.X — название" + что сделал + результат
