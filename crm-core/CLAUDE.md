@@ -175,6 +175,8 @@ new → contacted → cp → contract → payment → onboarding → active
 
 ## Обязательные проверки после каждого промпта
 
+0. Перед git push — запусти `bash /opt/mn/scripts/ci_validate.sh`. Если FAIL — исправь до зелёного. Коммитить с красным CI запрещено.
+
 1. Сверить .env.example с .env:
    diff <(grep -oP '^[A-Z_]+' .env.example | sort) <(grep -oP '^[A-Z_]+' .env | sort)
    Если diff не пустой — добавить недостающие переменные в .env.

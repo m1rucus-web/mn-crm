@@ -4,6 +4,18 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-3 Шаг 3 — CI-правило в CLAUDE.md обоих сервисов ✅
+Результат: добавлен пункт 0 в «Обязательные проверки»: запуск ci_validate.sh перед push
+Следующий: ФИНАЛ — локальный CI + git push
+
+---
+
+## 2026-03-01 — ГОТОВО: АУДИТ-3 Шаг 2 — .github/workflows/ci.yml ✅
+Результат: создан .github/workflows/ci.yml — триггеры push/PR в main, python 3.12, pip install обоих requirements.txt, bash scripts/ci_validate.sh
+Следующий: Шаг 3 — обновить CLAUDE.md обоих сервисов
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-3 Шаг 1 — scripts/ci_validate.sh ✅
 Результат: создан /opt/mn/scripts/ci_validate.sh (chmod +x), 5 проверок:
 1. Утечка .env — git ls-files
