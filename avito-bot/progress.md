@@ -2,7 +2,7 @@
 Последнее обновление: 2026-03-01
 
 ## Текущий шаг
-➡️ Промпт 4 — venv + FastAPI-каркас для Авито-бота
+➡️ Промпт 5 — venv + FastAPI-каркас для CRM
 
 ## Чеклист Фазы 1
 
@@ -11,7 +11,7 @@
 - [x] 1.0.2 Создать Linux-пользователей mn-avito, mn-crm
 - [x] 1.0.3 Настроить права (chmod 700, shared 755)
 - [x] 1.0.4 Проверить 10 JSON-конфигов в shared/config/ (все OK)
-- [ ] 1.0.5 Инициализировать venv для avito-bot ← СЛЕДУЮЩИЙ
+- [x] 1.0.5 Инициализировать venv для avito-bot ✅
 - [ ] 1.0.6 Инициализировать venv для crm-core
 
 ### 1.1 База данных
@@ -21,7 +21,7 @@
 - [ ] 1.1.4 Проверить все индексы
 
 ### 1.2 Ядро бота (без AI)
-- [ ] 1.2.1 settings.py (pydantic-settings из .env)
+- [x] 1.2.1 settings.py (pydantic-settings из .env) ✅
 - [ ] 1.2.2 db.py (SQLAlchemy async engine)
 - [ ] 1.2.3 models.py (ORM-модели)
 - [ ] 1.2.4 avito_client.py (из /root/crm/, адаптация на httpx)
@@ -32,7 +32,7 @@
 - [ ] 1.2.9 outbox_writer.py
 - [ ] 1.2.10 outbox_worker.py (pending → CRM каждые 30 сек)
 - [ ] 1.2.11 Echo-ответ (без AI)
-- [ ] 1.2.12 health.py (GET /health)
+- [x] 1.2.12 health.py (GET /health) ✅
 
 ### 1.2a Миграция старой БД
 - [ ] 1.2a.1 Экспорт leads из /root/crm/ старой БД
