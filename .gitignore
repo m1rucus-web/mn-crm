@@ -10,3 +10,4 @@ logs/
 *.pyc
 backups/
 status/
+.github/workflows/ci.yml
