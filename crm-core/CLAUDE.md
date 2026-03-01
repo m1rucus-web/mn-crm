@@ -68,6 +68,7 @@ DADATA_SECRET_KEY=
 CRM_DB_PATH=data/crm.db
 AVITO_BOT_URL=http://localhost:8001
 LOG_LEVEL=INFO
+APP_VERSION=0.1.0
 ```
 
 ## Как запускать
