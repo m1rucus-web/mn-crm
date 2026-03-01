@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "timezone": "Europe/Moscow",
+  "work_start": "08:00",
+  "work_end": "22:00",
+  "night_mode": {
+    "enabled": true,
+    "start": "22:00",
+    "end": "08:00",
+    "auto_reply": "Спасибо за обращение! Бухгалтер ответит утром до 9:00. А пока — вы как ИП работаете или ООО?"
+  },
+  "weekdays": {
+    "monday": true,
+    "tuesday": true,
+    "wednesday": true,
+    "thursday": true,
+    "friday": true,
+    "saturday": true,
+    "sunday": false
+  },
+  "holidays_auto_reply": "Сегодня выходной, но мы уже записали вашу заявку. Бухгалтер свяжется в понедельник!"
+}

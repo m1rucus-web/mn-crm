@@ -1,0 +1,96 @@
+{
+  "version": "1.0",
+  "note": "Сроки отчётности РФ 2026. task_generator.py создаёт задачи на 1-е число по этому календарю. due_day — крайний срок сдачи (день месяца).",
+  "quarterly": [
+    {
+      "id": "usn_tax",
+      "name": "Аванс по УСН",
+      "applies_to": ["ip_usn", "ooo_usn"],
+      "months": [4, 7, 10],
+      "due_day": 28,
+      "description": "Авансовый платёж по УСН за предыдущий квартал"
+    },
+    {
+      "id": "nds_declaration",
+      "name": "Декларация по НДС",
+      "applies_to": ["ip_osn", "ooo_osn"],
+      "months": [1, 4, 7, 10],
+      "due_day": 25,
+      "description": "Декларация по НДС за предыдущий квартал"
+    },
+    {
+      "id": "rsv",
+      "name": "РСВ (расчёт по страховым взносам)",
+      "applies_to": ["has_employees"],
+      "months": [1, 4, 7, 10],
+      "due_day": 25,
+      "description": "РСВ за предыдущий квартал"
+    },
+    {
+      "id": "6ndfl",
+      "name": "6-НДФЛ",
+      "applies_to": ["has_employees"],
+      "months": [1, 4, 7, 10],
+      "due_day": 25,
+      "description": "Расчёт 6-НДФЛ за предыдущий квартал"
+    },
+    {
+      "id": "profit_tax",
+      "name": "Налог на прибыль (аванс)",
+      "applies_to": ["ooo_osn"],
+      "months": [1, 4, 7, 10],
+      "due_day": 28,
+      "description": "Авансовый платёж по налогу на прибыль"
+    }
+  ],
+  "monthly": [
+    {
+      "id": "efs1_staff",
+      "name": "ЕФС-1 (кадры)",
+      "applies_to": ["has_employees"],
+      "due_day": 25,
+      "description": "Сведения о кадровых мероприятиях"
+    },
+    {
+      "id": "personified",
+      "name": "Персонифицированные сведения",
+      "applies_to": ["has_employees"],
+      "due_day": 25,
+      "description": "Сведения о застрахованных лицах"
+    }
+  ],
+  "annual": [
+    {
+      "id": "usn_annual_ip",
+      "name": "Декларация УСН (ИП)",
+      "applies_to": ["ip_usn"],
+      "month": 4,
+      "due_day": 25,
+      "description": "Годовая декларация УСН для ИП"
+    },
+    {
+      "id": "usn_annual_ooo",
+      "name": "Декларация УСН (ООО)",
+      "applies_to": ["ooo_usn"],
+      "month": 3,
+      "due_day": 25,
+      "description": "Годовая декларация УСН для ООО"
+    },
+    {
+      "id": "balance",
+      "name": "Бухгалтерская отчётность",
+      "applies_to": ["ooo_usn", "ooo_osn"],
+      "month": 3,
+      "due_day": 31,
+      "description": "Баланс + отчёт о фин. результатах"
+    },
+    {
+      "id": "fixed_contributions",
+      "name": "Фиксированные взносы ИП",
+      "applies_to": ["ip_usn", "ip_patent", "ip_osn"],
+      "month": 12,
+      "due_day": 31,
+      "description": "Фиксированные страховые взносы ИП за себя"
+    }
+  ]
+}

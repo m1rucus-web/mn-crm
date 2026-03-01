@@ -1,0 +1,61 @@
+{
+  "version": "1.0",
+  "note": "Начальный импорт. После запуска CRM мастер-данные — в crm.db. telegram_user_id обязателен для алертов.",
+  "employees": [
+    {
+      "id": 1,
+      "name": "ЗАПОЛНИТЬ — ФИО бухгалтера 1",
+      "short_name": "ЗАПОЛНИТЬ",
+      "username": "ЗАПОЛНИТЬ — @telegram",
+      "telegram_user_id": 0,
+      "role": "accountant",
+      "max_clients": 25,
+      "status": "active",
+      "substitute_id": null
+    },
+    {
+      "id": 2,
+      "name": "ЗАПОЛНИТЬ — ФИО бухгалтера 2",
+      "short_name": "ЗАПОЛНИТЬ",
+      "username": "ЗАПОЛНИТЬ — @telegram",
+      "telegram_user_id": 0,
+      "role": "accountant",
+      "max_clients": 25,
+      "status": "active",
+      "substitute_id": null
+    },
+    {
+      "id": 3,
+      "name": "ЗАПОЛНИТЬ — ФИО бухгалтера 3",
+      "short_name": "ЗАПОЛНИТЬ",
+      "username": "ЗАПОЛНИТЬ — @telegram",
+      "telegram_user_id": 0,
+      "role": "accountant",
+      "max_clients": 25,
+      "status": "active",
+      "substitute_id": null
+    },
+    {
+      "id": 4,
+      "name": "ЗАПОЛНИТЬ — ФИО бухгалтера 4",
+      "short_name": "ЗАПОЛНИТЬ",
+      "username": "ЗАПОЛНИТЬ — @telegram",
+      "telegram_user_id": 0,
+      "role": "accountant",
+      "max_clients": 25,
+      "status": "active",
+      "substitute_id": null
+    },
+    {
+      "id": 5,
+      "name": "Никифоров Юрий",
+      "short_name": "Юрий",
+      "username": "ЗАПОЛНИТЬ — @telegram",
+      "telegram_user_id": 0,
+      "role": "manager",
+      "max_clients": 0,
+      "status": "active",
+      "substitute_id": null
+    }
+  ]
+}

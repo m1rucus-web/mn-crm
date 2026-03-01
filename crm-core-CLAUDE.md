@@ -1,0 +1,157 @@
+# CLAUDE.md — CRM-ядро (Сервис 3)
+
+## Что это
+CRM для бухгалтерской компании. Принимает лидов из Авито-бота через API → карточки → воронка → задачи → назначение бухгалтеров. HTMX-дашборд для работы в браузере. Управляет drip-кампанией (решает КОГДА слать, бот решает КАК доставить).
+
+## Стек
+Python 3.12, FastAPI (порт 8003), SQLite WAL (data/crm.db), SQLAlchemy async, httpx, loguru, APScheduler, Jinja2 + HTMX, pydantic-settings.
+
+## Структура
+```
+/opt/mn/crm-core/
+├── CLAUDE.md              ← Этот файл
+├── progress.md            ← Живой чеклист (где я сейчас)
+├── worklog.md             ← Полный лог действий (что делал, когда, результат)
+├── src/
+│   ├── main.py              # FastAPI app + lifespan
+│   ├── settings.py          # pydantic-settings из .env
+│   ├── db.py                # SQLAlchemy async engine + sessions
+│   ├── models.py            # ORM: clients, employees, tasks, history, onboarding_documents, processed_keys, drip_events, outbox
+│   ├── api/
+│   │   ├── leads.py         # POST /api/v1/leads — приём из Авито-бота
+│   │   ├── clients.py       # GET/PATCH /api/v1/clients — CRUD
+│   │   ├── tasks.py         # GET/POST /api/v1/tasks
+│   │   ├── employees.py     # GET /api/v1/employees/active
+│   │   ├── stats.py         # GET /api/v1/stats/funnel
+│   │   └── health.py        # GET /health
+│   ├── web/
+│   │   ├── routes.py        # HTMX-дашборд: /crm/
+│   │   └── templates/       # Jinja2: leads_list, client_card, pipeline, tasks
+│   ├── services/
+│   │   ├── idempotency.py   # processed_keys: проверка idempotency_key
+│   │   ├── lead_merger.py   # Дедупликация по phone/inn → merge
+│   │   ├── pipeline.py      # Смена pipeline_stage + запись в history + outbox→бот
+│   │   ├── assignment.py    # Назначение бухгалтера (round-robin, нагрузка)
+│   │   ├── cp_generator.py  # PDF с логотипом (docxtpl)
+│   │   ├── dadata.py        # Проверка контрагентов
+│   │   └── outbox_writer.py # Запись в outbox (для бота и Telegram)
+│   ├── workers/
+│   │   ├── outbox_worker.py # Фоновая отправка pending → Авито-бот (каждые 30 сек)
+│   │   ├── drip_scheduler.py  # Drip-кампания: проверка drip_next_at, отправка через outbox
+│   │   ├── task_generator.py  # Cron 1-е число: задачи по tax_calendar
+│   │   ├── sla_monitor.py     # Cron 10 мин: new > 1ч → алерт
+│   │   └── churn_detector.py  # Cron ежедневно: нет контактов 30+ дней
+├── scripts/
+│   ├── init_db.py
+│   ├── backup.sh
+│   └── seed_test_data.py    # Тестовые данные для разработки
+├── tests/
+├── data/crm.db
+└── .env
+```
+
+## Конфиги
+Читать из `/opt/mn/shared/config/` (read-only):
+- `pricelist.json` — цены (для генерации КП)
+- `company.json` — реквизиты (для договоров и КП)
+- `employees.json` — начальный импорт (потом мастер — crm.db)
+- `tax_calendar.json` — сроки отчётности (для task_generator)
+- `templates.json` — шаблоны сообщений (drip, напоминания)
+- `services_catalog.json` — каталог услуг (для КП)
+
+## .env переменные
+```
+AVITO_INTERNAL_KEY=
+TELEGRAM_BOT_TOKEN=
+ADMIN_CHAT_ID=
+CRM_DB_PATH=data/crm.db
+AVITO_BOT_URL=http://localhost:8001
+LOG_LEVEL=INFO
+```
+
+## Как запускать
+```bash
+sudo -u mn-crm bash
+cd /opt/mn/crm-core
+source .venv/bin/activate
+uvicorn src.main:app --host 127.0.0.1 --port 8003
+```
+Systemd: `mn-crm-core.service`
+
+## Ключевые правила
+
+### Воронка (pipeline_stage)
+```
+new → contacted → cp → contract → payment → onboarding → active
+                                                        → lost_thinking / lost_silent / lost_competitor / lost_banned / lost_final
+```
+- КАЖДОЕ изменение → запись в `history` (action='stage_change', details=JSON from/to)
+- При переходе в contract/payment/active → outbox → POST /api/v1/leads/{chat_id}/status на боте (отключает AI)
+
+### Приём лидов (POST /api/v1/leads)
+1. Проверить `X-Internal-Key` (== AVITO_INTERNAL_KEY из .env)
+2. Проверить `idempotency_key` в `processed_keys` → дубль? вернуть предыдущий результат
+3. **Дедупликация:** если phone ИЛИ inn совпадает → обновить существующего → `{"status": "merged"}`
+4. UPSERT по `ON CONFLICT (source, source_id)` → 201 (created) / 200 (updated)
+5. Маппинг: API `client_name` → DB `name`
+
+### Drip-кампания
+- Поля `drip_active`, `drip_campaign_step`, `drip_next_at` — в clients
+- Триггер: 3 дня после `last_client_message_at`
+- Отправка: через outbox → POST /api/v1/send-message на боте
+- Ответ клиента → `drip_active=0`, `pipeline_stage=contacted`, задача бухгалтеру
+- 403 от бота → `lost_banned`, drip стоп
+- 7-й шаг без ответа → `lost_final`
+- Логировать в `drip_events`
+
+### SLA
+- new > 1 час → алерт в Telegram
+- КП > 48 часов → задача бухгалтеру
+- Нагрузка > 20 клиентов на бухгалтера → задача «начать найм»
+- Нагрузка > 23 → drip на паузу
+
+---
+
+## ⚡ Протокол работы (ОБЯЗАТЕЛЬНО)
+
+### При старте каждой сессии:
+1. **ПЕРВЫМ ДЕЛОМ** прочитай `progress.md` и `worklog.md`
+2. Если в worklog.md есть запись «НАЧИНАЮ» без парного «ГОТОВО» — это незавершённый шаг. Проверь его состояние, доложи, потом продолжай.
+3. Прочитай текущий шаг в progress.md → это твоя задача.
+
+### Перед КАЖДЫМ шагом:
+1. Запиши в `worklog.md`:
+   ```
+   ## ГГГГ-ММ-ДД ЧЧ:ММ — НАЧИНАЮ: [название шага]
+   Что делаю: [описание]
+   Изменения: [какие файлы создаю/меняю]
+   Зависимости: [от чего зависит]
+   Риски: [что может пойти не так]
+   ```
+2. Обнови `progress.md`: поставь `← В РАБОТЕ` на текущий подшаг.
+
+### После КАЖДОГО шага:
+1. Запиши в `worklog.md`:
+   ```
+   ## ГГГГ-ММ-ДД ЧЧ:ММ — ГОТОВО: [название шага] ✅
+   Результат: [что получилось]
+   Коммит: [хеш] "[сообщение коммита]"
+   Следующий: [какой шаг дальше]
+   ```
+2. Обнови `progress.md`: поставь `[x]` и сдвинь `← СЛЕДУЮЩИЙ`.
+3. Сделай `git commit` с осмысленным сообщением на русском.
+
+### При обрыве связи (восстановление):
+1. Прочитай `progress.md` → `worklog.md` → `git log --oneline -5` → `git diff`
+2. Запиши в worklog: «ВОССТАНОВЛЕНИЕ после обрыва. Состояние: [что нашёл]»
+3. Доложи статус, жди инструкций.
+
+---
+
+## ЗАПРЕЩЕНО
+- Прямой доступ к bot.db
+- DELETE в SQLite для бизнес-сущностей (clients, tasks) — только soft delete
+- Docker, Kubernetes, GraphQL, микрофронтенды
+- Мессенджер-хаб, Аналитика, Биллинг — это Фазы 2-3
+- Хранение API-ключей в коде (только .env)
+- Пропускать записи в worklog.md и progress.md
