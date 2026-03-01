@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-1 Шаг 3 — DADATA ключи в avito-bot CLAUDE.md ✅
+Результат: добавлены DADATA_API_KEY и DADATA_SECRET_KEY в секцию .env переменные
+Следующий: Шаг 4 — то же для crm-core
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-1 Шаг 1 — /health полный контракт (avito-bot) ✅
 Результат: /health теперь возвращает все 8 полей по FOUNDATION §7: service, status, version, uptime_seconds, db, outbox_pending, outbox_failed, errors_last_hour
 Следующий: Шаг 2 — то же для crm-core
