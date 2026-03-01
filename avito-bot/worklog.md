@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 12 — убрать unused text import из db.py ✅
+Результат: `from sqlalchemy import event, text` → `from sqlalchemy import event`
+Следующий: Шаг 13 — задачи эксплуатации в progress.md
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 9 — удалить дубли из корня ✅
 Результат: удалены 4 файла-дубля (avito-bot-CLAUDE.md, avito-bot-progress.md, crm-core-CLAUDE.md, crm-core-progress.md)
 Следующий: Шаг 10 — crm-core .gitignore !.env.example

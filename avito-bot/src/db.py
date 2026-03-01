@@ -1,6 +1,6 @@
 """SQLAlchemy async engine + session factory для bot.db."""
 
-from sqlalchemy import event, text
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from src.settings import settings
