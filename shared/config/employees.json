@@ -1,61 +1,40 @@
 {
   "version": "1.0",
-  "note": "Начальный импорт. После запуска CRM мастер-данные — в crm.db. telegram_user_id обязателен для алертов.",
   "employees": [
     {
-      "id": 1,
-      "name": "ЗАПОЛНИТЬ — ФИО бухгалтера 1",
-      "short_name": "ЗАПОЛНИТЬ",
-      "username": "ЗАПОЛНИТЬ — @telegram",
-      "telegram_user_id": 0,
-      "role": "accountant",
-      "max_clients": 25,
-      "status": "active",
-      "substitute_id": null
-    },
-    {
-      "id": 2,
-      "name": "ЗАПОЛНИТЬ — ФИО бухгалтера 2",
-      "short_name": "ЗАПОЛНИТЬ",
-      "username": "ЗАПОЛНИТЬ — @telegram",
-      "telegram_user_id": 0,
-      "role": "accountant",
-      "max_clients": 25,
-      "status": "active",
-      "substitute_id": null
-    },
-    {
-      "id": 3,
-      "name": "ЗАПОЛНИТЬ — ФИО бухгалтера 3",
-      "short_name": "ЗАПОЛНИТЬ",
-      "username": "ЗАПОЛНИТЬ — @telegram",
-      "telegram_user_id": 0,
-      "role": "accountant",
-      "max_clients": 25,
-      "status": "active",
-      "substitute_id": null
-    },
-    {
-      "id": 4,
-      "name": "ЗАПОЛНИТЬ — ФИО бухгалтера 4",
-      "short_name": "ЗАПОЛНИТЬ",
-      "username": "ЗАПОЛНИТЬ — @telegram",
-      "telegram_user_id": 0,
-      "role": "accountant",
-      "max_clients": 25,
-      "status": "active",
-      "substitute_id": null
-    },
-    {
-      "id": 5,
       "name": "Никифоров Юрий",
       "short_name": "Юрий",
-      "username": "ЗАПОЛНИТЬ — @telegram",
-      "telegram_user_id": 0,
+      "username": "tel89231042255",
       "role": "manager",
-      "max_clients": 0,
-      "status": "active",
-      "substitute_id": null
+      "is_active": true
+    },
+    {
+      "name": "Кутузова Елена",
+      "short_name": "Елена",
+      "username": "ElfaKutuzova",
+      "role": "accountant",
+      "is_active": true
+    },
+    {
+      "name": "Шмелева Ангелина",
+      "short_name": "Ангелина",
+      "username": "Angel897b",
+      "role": "accountant",
+      "is_active": true
+    },
+    {
+      "name": "Кирсанова Татьяна",
+      "short_name": "Татьяна",
+      "username": "Traaaq",
+      "role": "accountant",
+      "is_active": true
+    },
+    {
+      "name": "Ким Альбина",
+      "short_name": "Альбина",
+      "username": "sk_21vek",
+      "role": "accountant",
+      "is_active": true
     }
   ]
 }
