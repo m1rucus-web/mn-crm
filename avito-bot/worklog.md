@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: CI проверка 6 — динамический /health ✅
+Результат: добавлена проверка 6 в ci_validate.sh — запуск обоих сервисов на портах 18001/18003, curl /health, проверка всех 8 полей по FOUNDATION §7 (service, status, version, uptime_seconds, db, outbox_pending, outbox_failed, errors_last_hour). trap cleanup_servers EXIT. CI PASS.
+Следующий: День 2
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-3 Шаг 3 — CI-правило в CLAUDE.md обоих сервисов ✅
 Результат: добавлен пункт 0 в «Обязательные проверки»: запуск ci_validate.sh перед push
 Следующий: ФИНАЛ — локальный CI + git push

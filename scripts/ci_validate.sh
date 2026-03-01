@@ -125,6 +125,58 @@ check_env_example() {
 check_env_example "avito-bot"
 check_env_example "crm-core"
 
+# ─── 6. Динамическая проверка /health ───
+echo ""
+echo "=== Проверка 6: /health эндпоинт ==="
+
+# Убиваем фоновые серверы при выходе
+cleanup_servers() {
+    kill %1 %2 2>/dev/null || true
+    wait 2>/dev/null || true
+}
+trap cleanup_servers EXIT
+
+# Запускаем оба сервиса на непродовых портах
+cd "$REPO_ROOT/avito-bot" && .venv/bin/uvicorn src.main:app --port 18001 &>/dev/null &
+cd "$REPO_ROOT/crm-core" && .venv/bin/uvicorn src.main:app --port 18003 &>/dev/null &
+sleep 3
+
+HEALTH_EXPECTED='service,status,version,uptime_seconds,db,outbox_pending,outbox_failed,errors_last_hour'
+
+check_health() {
+    local name="$1"
+    local port="$2"
+    local response
+    response=$(curl -sf "http://127.0.0.1:$port/health" 2>/dev/null) || {
+        fail "$name: /health не отвечает на порту $port"
+        return
+    }
+    local missing
+    missing=$(echo "$response" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+expected = {'service','status','version','uptime_seconds','db','outbox_pending','outbox_failed','errors_last_hour'}
+missing = expected - set(d.keys())
+if missing:
+    print(f'не хватает: {missing}')
+") || {
+        fail "$name: /health вернул невалидный JSON"
+        return
+    }
+    if [ -n "$missing" ]; then
+        fail "$name: /health $missing"
+    else
+        pass "$name: /health OK (все 8 полей)"
+    fi
+}
+
+check_health "avito-bot" 18001
+check_health "crm-core" 18003
+
+# Останавливаем серверы
+cleanup_servers
+trap - EXIT
+
 # ─── Итог ───
 echo ""
 echo "=============================="
