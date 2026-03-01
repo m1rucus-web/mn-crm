@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 10 — crm-core .gitignore !.env.example ✅
+Результат: добавлена строка !.env.example — теперь .env.example не игнорируется
+Следующий: Шаг 12 — убрать unused text import из avito-bot db.py
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 4 — APP_VERSION в crm-core CLAUDE.md ✅
 Результат: добавлена APP_VERSION=0.1.0 в секцию .env переменные
 Следующий: Шаг 9 — удалить дубли из корня
