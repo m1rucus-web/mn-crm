@@ -61,6 +61,8 @@
 - [ ] 1.5.4 WAL checkpoint cron 03:00 МСК (PRAGMA wal_checkpoint PASSIVE)
 - [ ] 1.5.5 processed_keys TTL cron (DELETE WHERE created_at < 90 дней)
 - [ ] 1.5.6 Claude Code hooks: PreToolUse блокировка DROP/DELETE/rm, Stop → Telegram
+- [ ] 1.5.7 healthcheck.sh — реализовать скрипт мониторинга
+- [ ] 1.5.8 Решить: SLA-монитор cron 10 мин или 30 мин (спросить Юрия)
 
 ## Решения (что и почему выбрали)
 <!-- Заполняется по ходу работы -->

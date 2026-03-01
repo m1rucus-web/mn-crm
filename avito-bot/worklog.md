@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 13 — задачи эксплуатации в progress.md ✅
+Результат: avito-bot: +2 задачи (healthcheck.sh, SLA-монитор). crm-core: +3 задачи (healthcheck.sh, aiogram, SLA-монитор)
+Следующий: ФИНАЛ — git push
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 12 — убрать unused text import из db.py ✅
 Результат: `from sqlalchemy import event, text` → `from sqlalchemy import event`
 Следующий: Шаг 13 — задачи эксплуатации в progress.md

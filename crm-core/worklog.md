@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 13 — задачи эксплуатации в progress.md ✅
+Результат: добавлены задачи: healthcheck.sh, aiogram, SLA-монитор cron
+Следующий: ФИНАЛ — git push
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 10 — crm-core .gitignore !.env.example ✅
 Результат: добавлена строка !.env.example — теперь .env.example не игнорируется
 Следующий: Шаг 12 — убрать unused text import из avito-bot db.py
