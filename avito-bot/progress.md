@@ -23,7 +23,7 @@
 
 ### 1.2 Ядро бота (без AI)
 - [x] 1.2.1 settings.py (pydantic-settings из .env) ✅
-- [ ] 1.2.2 db.py (SQLAlchemy async engine)
+- [x] 1.2.2 db.py (SQLAlchemy async engine) ✅
 - [ ] 1.2.3 models.py (ORM-модели)
 - [ ] 1.2.4 avito_client.py (из /root/crm/, адаптация на httpx)
 - [ ] 1.2.5 rate_limiter.py (10/мин, 60/час, 300/день)
@@ -58,6 +58,9 @@
 - [ ] 1.5.1 backup.sh + cron
 - [ ] 1.5.2 Systemd-юнит mn-avito-bot.service
 - [ ] 1.5.3 10 тестовых диалогов (дубли, порядок, ретраи)
+- [ ] 1.5.4 WAL checkpoint cron 03:00 МСК (PRAGMA wal_checkpoint PASSIVE)
+- [ ] 1.5.5 processed_keys TTL cron (DELETE WHERE created_at < 90 дней)
+- [ ] 1.5.6 Claude Code hooks: PreToolUse блокировка DROP/DELETE/rm, Stop → Telegram
 
 ## Решения (что и почему выбрали)
 <!-- Заполняется по ходу работы -->

@@ -18,8 +18,8 @@
 - [ ] 1.1.5 seed_test_data.py (тестовые данные для разработки)
 
 ### 1.2 Приём лидов (POST /api/v1/leads)
-- [ ] 1.2.1 settings.py (pydantic-settings из .env)
-- [ ] 1.2.2 db.py (SQLAlchemy async engine)
+- [x] 1.2.1 settings.py (pydantic-settings из .env) ✅
+- [x] 1.2.2 db.py (SQLAlchemy async engine) ✅
 - [ ] 1.2.3 models.py (ORM-модели)
 - [ ] 1.2.4 idempotency.py (проверка idempotency_key в processed_keys)
 - [ ] 1.2.5 lead_merger.py (дедупликация по phone/inn → merge)
@@ -33,7 +33,7 @@
 - [ ] 1.3.4 tasks.py (GET/POST /api/v1/tasks)
 - [ ] 1.3.5 employees.py (GET /api/v1/employees/active)
 - [ ] 1.3.6 stats.py (GET /api/v1/stats/funnel)
-- [ ] 1.3.7 health.py (GET /health)
+- [x] 1.3.7 health.py (GET /health) ✅
 
 ### 1.3a–c Автоматизация
 - [ ] 1.3a task_generator.py (cron 1-е число: задачи по tax_calendar)
@@ -58,6 +58,9 @@
 - [ ] 1.6.3 Nginx конфиг (/crm/ → 8003, /crm/webhook/avito → 8001)
 - [ ] 1.6.4 SSL проверка (certbot)
 - [ ] 1.6.5 Финальная валидация: 10 тестовых диалогов E2E
+- [ ] 1.6.6 WAL checkpoint cron 03:00 МСК (PRAGMA wal_checkpoint PASSIVE)
+- [ ] 1.6.7 processed_keys TTL cron (DELETE WHERE created_at < 90 дней)
+- [ ] 1.6.8 Claude Code hooks: PreToolUse блокировка DROP/DELETE/rm, Stop → Telegram
 
 ## Решения (что и почему выбрали)
 <!-- Заполняется по ходу работы -->
