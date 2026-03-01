@@ -205,3 +205,7 @@ new → contacted → cp → contract → payment → onboarding → active
 1. НЕ чини молча — запиши в worklog что сломалось и почему
 2. Если сломал чужой сервис — СТОП, сообщи Юрию
 3. Откати через git: git diff → git checkout -- файл
+
+## Handoff
+
+Обновлять `.claude/handoff.md` в конце каждой сессии.
