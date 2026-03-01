@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-1 Шаг 7 — Logo.png → logo.png ✅
+Результат: переименовано shared/templates/Logo.png → logo.png (FOUNDATION требует строчную)
+Следующий: Шаг 8 — убрать api/health.py из CLAUDE.md
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-1 Шаг 5 — проверка БД при старте avito-bot ✅
 Результат: lifespan делает SELECT 1 при старте, RuntimeError если БД недоступна
 Следующий: Шаг 6 — то же для crm-core
