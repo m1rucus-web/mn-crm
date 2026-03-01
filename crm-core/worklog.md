@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-03-01 13:36 — ГОТОВО: Промпт 5 — venv + FastAPI-каркас CRM ✅
+Что сделано:
+- Создан venv (Python 3.12.3)
+- requirements.txt: fastapi, uvicorn, sqlalchemy, aiosqlite, httpx, loguru, apscheduler, pydantic-settings, python-dotenv, jinja2, docxtpl, python-multipart
+- Все зависимости установлены через pip
+- .gitignore создан (crm-core-level)
+- .env.example + .env (копия шаблона)
+- src/__init__.py, src/settings.py (pydantic-settings), src/main.py (FastAPI + loguru + health)
+- Health проверен: {"service":"crm-core","status":"ok","version":"0.1.0"}
+Следующий: Промпт 6 — База данных Авито-бота
+
+---
+
 ## 2026-03-01 | Промпт 3 — Проверка JSON
 - Проверил 10 JSON-конфигов
 - Все валидны, company.json и employees.json содержат заглушки
