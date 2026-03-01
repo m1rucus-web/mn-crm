@@ -36,6 +36,14 @@ async def lifespan(app: FastAPI):
     global _start_time
     setup_logging()
     _start_time = time.time()
+    # Проверка БД при старте — не стартуем с битой базой
+    try:
+        async with async_session() as session:
+            await session.execute(text("SELECT 1"))
+        logger.info("БД bot.db — OK")
+    except Exception as exc:
+        logger.error("БД bot.db недоступна: {}", exc)
+        raise RuntimeError(f"БД bot.db недоступна: {exc}") from exc
     logger.info("Авито-бот v{} запускается", settings.app_version)
     yield
     logger.info("Авито-бот останавливается")
