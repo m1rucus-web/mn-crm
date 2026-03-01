@@ -2,7 +2,7 @@
 Последнее обновление: 2026-03-01
 
 ## Текущий шаг
-➡️ Промпт 6 — База данных Авито-бота
+➡️ Промпт 7 — База данных CRM (ожидание)
 
 ## Чеклист Фазы 1
 
@@ -15,10 +15,10 @@
 - [x] 1.0.6 Инициализировать venv для crm-core ✅
 
 ### 1.1 База данных
-- [ ] 1.1.1 Создать scripts/init_db.py
-- [ ] 1.1.2 Создать bot.db со всеми таблицами (leads, messages, employees, topic_mapping, settings, outbox, ai_logs)
-- [ ] 1.1.3 Проверить PRAGMA WAL + busy_timeout
-- [ ] 1.1.4 Проверить все индексы
+- [x] 1.1.1 Создать scripts/init_db.py ✅
+- [x] 1.1.2 Создать bot.db со всеми таблицами (leads, messages, employees, topic_mapping, settings, outbox, ai_logs) ✅
+- [x] 1.1.3 Проверить PRAGMA WAL + busy_timeout ✅
+- [x] 1.1.4 Проверить все индексы ✅
 
 ### 1.2 Ядро бота (без AI)
 - [x] 1.2.1 settings.py (pydantic-settings из .env) ✅
