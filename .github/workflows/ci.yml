@@ -1,0 +1,28 @@
+name: CI Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install avito-bot dependencies
+        run: pip install -r avito-bot/requirements.txt
+
+      - name: Install crm-core dependencies
+        run: pip install -r crm-core/requirements.txt
+
+      - name: Run CI validation
+        run: bash scripts/ci_validate.sh
