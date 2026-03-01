@@ -64,6 +64,8 @@ Python 3.12, FastAPI (порт 8003), SQLite WAL (data/crm.db), SQLAlchemy async
 AVITO_INTERNAL_KEY=
 TELEGRAM_BOT_TOKEN=
 ADMIN_CHAT_ID=
+DADATA_API_KEY=
+DADATA_SECRET_KEY=
 CRM_DB_PATH=data/crm.db
 AVITO_BOT_URL=http://localhost:8001
 LOG_LEVEL=INFO
