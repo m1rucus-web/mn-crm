@@ -1,0 +1,1 @@
+/opt/mn/crm-core/progress.md

@@ -1,0 +1,1 @@
+/opt/mn/avito-bot/progress.md
