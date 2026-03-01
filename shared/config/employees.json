@@ -2,38 +2,63 @@
   "version": "1.0",
   "employees": [
     {
+      "id": 1,
+      "telegram_user_id": 0,
       "name": "Никифоров Юрий",
       "short_name": "Юрий",
       "username": "tel89231042255",
       "role": "manager",
+      "max_clients": 50,
+      "status": "active",
+      "substitute_id": null,
       "is_active": true
     },
     {
+      "id": 2,
+      "telegram_user_id": 0,
       "name": "Кутузова Елена",
       "short_name": "Елена",
       "username": "ElfaKutuzova",
       "role": "accountant",
+      "max_clients": 50,
+      "status": "active",
+      "substitute_id": null,
       "is_active": true
     },
     {
+      "id": 3,
+      "telegram_user_id": 0,
       "name": "Шмелева Ангелина",
       "short_name": "Ангелина",
       "username": "Angel897b",
       "role": "accountant",
+      "max_clients": 50,
+      "status": "active",
+      "substitute_id": null,
       "is_active": true
     },
     {
+      "id": 4,
+      "telegram_user_id": 0,
       "name": "Кирсанова Татьяна",
       "short_name": "Татьяна",
       "username": "Traaaq",
       "role": "accountant",
+      "max_clients": 50,
+      "status": "active",
+      "substitute_id": null,
       "is_active": true
     },
     {
+      "id": 5,
+      "telegram_user_id": 0,
       "name": "Ким Альбина",
       "short_name": "Альбина",
       "username": "sk_21vek",
       "role": "accountant",
+      "max_clients": 50,
+      "status": "active",
+      "substitute_id": null,
       "is_active": true
     }
   ]

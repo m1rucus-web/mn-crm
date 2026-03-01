@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 0 — employees.json обязательные поля ✅
+Результат: добавлены id, telegram_user_id (заглушка 0), max_clients (50), status (active), substitute_id (null)
+Следующий: Шаг 3 — APP_VERSION в avito-bot CLAUDE.md
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-1 Шаг 10 — задачи в progress.md ✅
 Результат: добавлены 3 задачи в 1.5 Эксплуатация (WAL checkpoint, processed_keys TTL, Claude Code hooks). Отмечен 1.2.2 db.py как выполненный.
 Следующий: ФИНАЛ — git push
