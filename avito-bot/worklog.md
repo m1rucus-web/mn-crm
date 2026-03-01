@@ -4,6 +4,18 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-3 Шаг 1 — scripts/ci_validate.sh ✅
+Результат: создан /opt/mn/scripts/ci_validate.sh (chmod +x), 5 проверок:
+1. Утечка .env — git ls-files
+2. bot.db — 7 таблиц через init_db.py в /tmp/
+3. crm.db — 8 таблиц через init_db.py в /tmp/
+4. py_compile всех .py обоих сервисов
+5. .env.example полнота — diff ключей с settings.py
+Локальный прогон: CI PASS
+Следующий: Шаг 2 — .github/workflows/ci.yml
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 13 — задачи эксплуатации в progress.md ✅
 Результат: avito-bot: +2 задачи (healthcheck.sh, SLA-монитор). crm-core: +3 задачи (healthcheck.sh, aiogram, SLA-монитор)
 Следующий: ФИНАЛ — git push
