@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 3 — APP_VERSION в avito-bot CLAUDE.md ✅
+Результат: добавлена APP_VERSION=0.1.0 в секцию .env переменные
+Следующий: Шаг 4 — APP_VERSION в crm-core CLAUDE.md
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-2 Шаг 0 — employees.json обязательные поля ✅
 Результат: добавлены id, telegram_user_id (заглушка 0), max_clients (50), status (active), substitute_id (null)
 Следующий: Шаг 3 — APP_VERSION в avito-bot CLAUDE.md

@@ -63,6 +63,7 @@ CRM_INTERNAL_KEY=
 CRM_URL=http://localhost:8003
 BOT_DB_PATH=data/bot.db
 LOG_LEVEL=INFO
+APP_VERSION=0.1.0
 ```
 
 ## Как запускать
