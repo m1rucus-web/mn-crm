@@ -20,8 +20,7 @@ Python 3.12, FastAPI (порт 8001), SQLite WAL (data/bot.db), SQLAlchemy async
 │   ├── api/
 │   │   ├── webhooks.py      # POST /webhook/avito — входящие от Авито
 │   │   ├── send_message.py  # POST /api/v1/send-message — исходящие от CRM
-│   │   ├── lead_status.py   # POST /api/v1/leads/{chat_id}/status — обновление от CRM
-│   │   └── health.py        # GET /health
+│   │   └── lead_status.py   # POST /api/v1/leads/{chat_id}/status — обновление от CRM
 │   ├── services/
 │   │   ├── avito_client.py  # Авито API (отправка, получение, rate limits)
 │   │   ├── ai_client.py     # OpenRouter (gemini-2.5-flash + fallback deepseek-v3.2)

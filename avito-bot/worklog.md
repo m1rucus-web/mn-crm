@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-03-01 — ГОТОВО: АУДИТ-1 Шаг 8 — убрать api/health.py из CLAUDE.md ✅
+Результат: удалена строка health.py из секции Структура (health живёт в main.py)
+Следующий: Шаг 9 — создать .claude/handoff.md
+
+---
+
 ## 2026-03-01 — ГОТОВО: АУДИТ-1 Шаг 7 — Logo.png → logo.png ✅
 Результат: переименовано shared/templates/Logo.png → logo.png (FOUNDATION требует строчную)
 Следующий: Шаг 8 — убрать api/health.py из CLAUDE.md

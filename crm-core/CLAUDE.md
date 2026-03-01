@@ -22,8 +22,7 @@ Python 3.12, FastAPI (порт 8003), SQLite WAL (data/crm.db), SQLAlchemy async
 │   │   ├── clients.py       # GET/PATCH /api/v1/clients — CRUD
 │   │   ├── tasks.py         # GET/POST /api/v1/tasks
 │   │   ├── employees.py     # GET /api/v1/employees/active
-│   │   ├── stats.py         # GET /api/v1/stats/funnel
-│   │   └── health.py        # GET /health
+│   │   └── stats.py         # GET /api/v1/stats/funnel
 │   ├── web/
 │   │   ├── routes.py        # HTMX-дашборд: /crm/
 │   │   └── templates/       # Jinja2: leads_list, client_card, pipeline, tasks
