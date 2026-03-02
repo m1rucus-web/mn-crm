@@ -4,7 +4,8 @@
 ## Текущий шаг
 ✅ Промпт 1 (День 2) — ORM-модели — АУДИТ ПРОЙДЕН
 ✅ Промпт 2 (День 2) — Сервисы (idempotency + lead_merger) — АУДИТ ПРОЙДЕН
-➡️ Промпт 3 (День 2) — POST /api/v1/leads endpoint
+✅ Промпт 3 (День 2) — POST /api/v1/leads endpoint — АУДИТ ПРОЙДЕН
+➡️ Промпт 4 (День 2) — Тесты POST /leads (10 штук)
 
 ## Чеклист Фазы 1
 
@@ -24,8 +25,8 @@
 - [x] 1.2.3 models.py (ORM-модели) ✅
 - [x] 1.2.4 idempotency.py (проверка idempotency_key в processed_keys) ✅
 - [x] 1.2.5 lead_merger.py (дедупликация по phone/inn → merge) ✅
-- [ ] 1.2.6 leads.py endpoint (X-Internal-Key, UPSERT, маппинг client_name→name) ← СЛЕДУЮЩИЙ
-- [ ] 1.2.7 Тесты: дубликат, битый payload, неверный ключ, merge по phone
+- [x] 1.2.6 leads.py endpoint (X-Internal-Key, UPSERT, маппинг client_name→name) ✅
+- [ ] 1.2.7 Тесты: дубликат, битый payload, неверный ключ, merge по phone ← СЛЕДУЮЩИЙ
 
 ### 1.3 Воронка и управление клиентами
 - [ ] 1.3.1 pipeline.py (смена pipeline_stage + history + outbox→бот)

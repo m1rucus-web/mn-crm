@@ -4,6 +4,25 @@
 
 ---
 
+## 2026-03-02 — АУДИТ ENDPOINT ПРОЙДЕН ✅
+Результат аудита (Фаза 2): все 10 проверок пройдены, ручные тесты прошли.
+- X-Internal-Key → 403: ✅
+- Идемпотентность (check ДО работы с клиентом): ✅
+- Дедупликация (find_duplicate ДО INSERT, 200 "merged"): ✅
+- UPSERT (SELECT + INSERT/UPDATE по source+source_id): ✅
+- Маппинг (client_name→name, last_message_at→source_last_message_at): ✅
+- History (lead_created/lead_updated, auto=1): ✅
+- responsible_id = NULL: ✅
+- save_idempotency ПОСЛЕ flush: ✅
+- Логирование trace_id: ✅
+- Pydantic-схема (24 поля): ✅
+- py_compile: OK
+- Ручные тесты: создание 201, идемпотентность OK, без ключа 403
+Действие (Фаза 3): исправлений не требуется. audit_current.md удалён. progress.md обновлён.
+Следующий: Промпт 4 — Тесты POST /leads
+
+---
+
 ## 2026-03-02 — НАЧИНАЮ: Промпт 3 Фаза 1 — POST /api/v1/leads endpoint
 Что делаю: создаю src/api/leads.py (POST /api/v1/leads) с авторизацией, идемпотентностью, дедупликацией, UPSERT
 Изменения: src/api/__init__.py (новый), src/api/leads.py (новый), src/main.py (подключение router)
