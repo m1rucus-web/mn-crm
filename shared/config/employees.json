@@ -8,7 +8,7 @@
       "short_name": "Юрий",
       "username": "tel89231042255",
       "role": "manager",
-      "max_clients": 50,
+      "max_clients": 20,
       "status": "active",
       "substitute_id": null,
       "is_active": true
@@ -20,7 +20,7 @@
       "short_name": "Елена",
       "username": "ElfaKutuzova",
       "role": "accountant",
-      "max_clients": 50,
+      "max_clients": 20,
       "status": "active",
       "substitute_id": null,
       "is_active": true
@@ -32,7 +32,7 @@
       "short_name": "Ангелина",
       "username": "Angel897b",
       "role": "accountant",
-      "max_clients": 50,
+      "max_clients": 20,
       "status": "active",
       "substitute_id": null,
       "is_active": true
@@ -44,7 +44,7 @@
       "short_name": "Татьяна",
       "username": "Traaaq",
       "role": "accountant",
-      "max_clients": 50,
+      "max_clients": 20,
       "status": "active",
       "substitute_id": null,
       "is_active": true
@@ -56,7 +56,7 @@
       "short_name": "Альбина",
       "username": "sk_21vek",
       "role": "accountant",
-      "max_clients": 50,
+      "max_clients": 20,
       "status": "active",
       "substitute_id": null,
       "is_active": true

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Нейро-Кодекс — Практики вайб-кодинга</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
+
+/* Cork board */
+#app{width:100%;height:100%;position:relative;
+  background-color:#a07850;
+  background-image:
+    radial-gradient(ellipse at 10% 20%,rgba(0,0,0,.07) 0%,transparent 50%),
+    radial-gradient(ellipse at 90% 80%,rgba(0,0,0,.06) 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 50%,rgba(255,220,160,.12) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 35px,rgba(0,0,0,.015) 35px,rgba(0,0,0,.015) 36px),
+    repeating-linear-gradient(90deg,transparent,transparent 35px,rgba(0,0,0,.015) 35px,rgba(0,0,0,.015) 36px);
+  cursor:grab}
+#app.panning{cursor:grabbing}
+
+#canvas-container{width:100%;height:100%;position:absolute;top:0;left:0;overflow:hidden}
+#transform-layer{transform-origin:0 0;position:absolute;top:0;left:0;width:1px;height:1px}
+#connections-svg{position:absolute;top:0;left:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:1}
+#connections-svg path{pointer-events:stroke;cursor:pointer;transition:stroke-width .15s}
+#connections-svg path:hover{stroke-width:3.5!important;filter:brightness(1.2)}
+
+/* Yarn animation */
+@keyframes yarnPulse{0%,100%{stroke-dashoffset:0}50%{stroke-dashoffset:-16}}
+#connections-svg path.yarn-cause{stroke:#d94444;stroke-width:2.5;stroke-dasharray:8 6;animation:yarnPulse 2s linear infinite;opacity:.7}
+#connections-svg path.yarn-group{stroke:#4488cc;stroke-width:2;stroke-dasharray:4 4;opacity:.5}
+#connections-svg path.yarn-related{stroke:#888;stroke-width:1.5;stroke-dasharray:6 4;opacity:.4}
+
+/* Top panel */
+#top-panel{position:fixed;top:16px;left:16px;z-index:1000;background:rgba(62,42,28,.92);backdrop-filter:blur(10px);border-radius:14px;padding:14px 22px;box-shadow:0 6px 24px rgba(0,0,0,.35);display:flex;align-items:center;gap:16px;border:1px solid rgba(255,220,160,.15)}
+#top-panel h1{font-size:20px;color:#ffd89e;font-weight:800;letter-spacing:-.3px;font-family:'Caveat',cursive;font-size:26px}
+#top-panel .version{font-size:12px;color:rgba(255,216,158,.5);font-weight:600}
+#new-card-btn{background:linear-gradient(135deg,#e8a44a,#d4882a);color:#3e2a1c;border:none;padding:8px 18px;border-radius:10px;font-size:13px;cursor:pointer;font-weight:700;transition:all .15s;font-family:'Nunito',sans-serif}
+#new-card-btn:hover{background:linear-gradient(135deg,#f0b85a,#e09a3a);transform:translateY(-1px);box-shadow:0 3px 12px rgba(228,164,74,.4)}
+
+/* Card type menu */
+#card-menu{display:none;position:absolute;top:100%;left:0;margin-top:8px;background:rgba(62,42,28,.96);backdrop-filter:blur(12px);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.4);overflow:hidden;min-width:260px;z-index:1001;border:1px solid rgba(255,220,160,.1)}
+#card-menu.open{display:block;animation:menuIn .15s ease}
+@keyframes menuIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+#card-menu .menu-item{padding:11px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;font-size:14px;transition:background .1s;color:#eee}
+#card-menu .menu-item:hover{background:rgba(255,255,255,.08)}
+#card-menu .menu-item .dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;box-shadow:inset 0 -2px 4px rgba(0,0,0,.2)}
+#card-menu .menu-sep{border-bottom:1px solid rgba(255,255,255,.06);margin:2px 0}
+
+/* Dashboard */
+#dashboard{position:fixed;top:16px;right:16px;z-index:1000;background:rgba(62,42,28,.92);backdrop-filter:blur(10px);border-radius:14px;padding:18px;box-shadow:0 6px 24px rgba(0,0,0,.35);width:240px;border:1px solid rgba(255,220,160,.1)}
+#dashboard h3{font-size:14px;color:#ffd89e;margin-bottom:12px;text-align:center;font-weight:700;font-family:'Caveat',cursive;font-size:20px}
+.dash-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.dash-stat:last-child{border:none}
+.dash-stat .label{font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px}
+.dash-stat .label .sdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dash-stat .value{font-size:16px;font-weight:800;color:#fff}
+#maturity-bar{width:100%;height:12px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden;margin:12px 0 6px}
+#maturity-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#e8a44a,#4caf50);transition:width .5s ease}
+#maturity-text{font-size:11px;color:rgba(255,255,255,.5);text-align:center}
+#timeline-section{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+#timeline-section h4{font-size:12px;color:rgba(255,216,158,.6);margin-bottom:8px;font-weight:700}
+.timeline-entry{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:11px;color:rgba(255,255,255,.5)}
+.timeline-entry .tl-dot{width:6px;height:6px;border-radius:50%;background:#e8a44a;flex-shrink:0}
+.timeline-entry .tl-count{color:#4caf50;font-weight:700}
+
+/* Cards base */
+.card{position:absolute;width:230px;min-height:90px;border-radius:5px;padding:16px 16px 14px;box-shadow:3px 4px 14px rgba(0,0,0,.3),0 1px 3px rgba(0,0,0,.12);cursor:default;user-select:none;transition:box-shadow .15s,transform .1s;z-index:10}
+.card::before{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 4px 4px,#e0d0c0,#a09080);box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:2}
+.card::after{content:'';position:absolute;bottom:0;right:0;width:24px;height:24px;background:linear-gradient(135deg,transparent 50%,rgba(0,0,0,.05) 50%,rgba(0,0,0,.1) 100%);border-radius:0 0 5px 0;pointer-events:none}
+.card:hover{box-shadow:4px 6px 20px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.15);z-index:50}
+.card.editing{z-index:999!important}
+
+/* Card header */
+.card-header{cursor:grab;padding-bottom:6px;margin-bottom:6px;border-bottom:1px dashed rgba(0,0,0,.1);display:flex;justify-content:space-between;align-items:flex-start}
+.card-header:active{cursor:grabbing}
+.card-tag{font-size:10px;text-transform:uppercase;letter-spacing:.5px;opacity:.6;font-weight:700}
+.card-delete{width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(0,0,0,.06);color:rgba(0,0,0,.3);font-size:13px;cursor:pointer;opacity:0;transition:opacity .15s,background .15s;line-height:1}
+.card:hover .card-delete{opacity:1}
+.card-delete:hover{background:rgba(220,50,50,.2);color:#c0392b}
+
+/* Card content */
+.card-title{font-size:15px;font-weight:700;color:#2a2a2a;margin-bottom:4px;font-family:'Caveat',cursive;font-size:18px;line-height:1.2}
+.card-desc{font-size:12px;color:#555;line-height:1.4;margin-bottom:6px}
+.card-meta{font-size:10px;color:#999;display:flex;justify-content:space-between;align-items:center}
+.card-date{opacity:.7}
+.card-status{font-size:13px;cursor:pointer;padding:2px 8px;border-radius:10px;font-weight:700;transition:all .15s}
+.card-status:hover{transform:scale(1.1)}
+.card-status.s-confirmed{background:rgba(76,175,80,.15);color:#2e7d32}
+.card-status.s-hypothesis{background:rgba(255,193,7,.15);color:#f57f17}
+.card-status.s-failed{background:rgba(244,67,54,.15);color:#c62828}
+
+/* Card type colors */
+.card-practice{background:linear-gradient(145deg,#c8f0c0,#a8e0a0)}
+.card-incident{background:linear-gradient(145deg,#f4b0a0,#eca090)}
+.card-principle{background:linear-gradient(145deg,#a8d4f4,#90c0e8)}
+.card-hypothesis{background:linear-gradient(145deg,#fff4a0,#ffe880)}
+.card-note{background:linear-gradient(145deg,#d8b0f0,#c8a0e0)}
+
+/* Hub card */
+.card.card-hub{
+  width:300px;min-height:180px;padding:20px;
+  background:linear-gradient(145deg,#FFE44D 0%,#FFD700 40%,#FFA500 100%);
+  border:2px solid #d4882a;border-radius:10px;
+  box-shadow:4px 6px 24px rgba(0,0,0,.35),0 0 50px rgba(255,215,0,.15)}
+.card.card-hub::before{width:18px;height:18px;background:radial-gradient(circle at 5px 5px,#f0d080,#b08040)}
+.card.card-hub:hover{box-shadow:5px 8px 28px rgba(0,0,0,.4),0 0 60px rgba(255,215,0,.2)}
+.hub-title{font-size:26px;font-weight:700;color:#5a3518;text-align:center;margin-bottom:4px;font-family:'Caveat',cursive;line-height:1.1}
+.hub-subtitle{font-size:12px;color:rgba(90,53,24,.5);text-align:center;margin-bottom:14px;font-weight:600}
+.hub-row{display:flex;justify-content:space-between;align-items:center;padding:5px 10px;margin:3px 0;border-radius:8px;font-size:14px;font-weight:700;font-family:'Caveat',cursive;font-size:18px}
+.hub-row.r-confirmed{background:rgba(46,125,50,.1);color:#2e7d32}
+.hub-row.r-hypothesis{background:rgba(245,127,23,.1);color:#e65100}
+.hub-row.r-failed{background:rgba(198,40,40,.1);color:#c62828}
+.hub-row.r-total{margin-top:8px;padding-top:10px;border-top:2px dashed rgba(90,53,24,.2);font-size:20px;color:#5a3518}
+
+/* Connector points */
+.connector{position:absolute;width:12px;height:12px;border-radius:50%;background:#888;border:2px solid #fff;opacity:0;transition:opacity .15s;cursor:crosshair;z-index:60;transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.card:hover .connector,.connector.active{opacity:1}
+.connector:hover{background:#d94444;transform:translate(-50%,-50%) scale(1.3)}
+.connector.top{top:0;left:50%}
+.connector.bottom{bottom:0;left:50%;top:auto;transform:translate(-50%,50%)}
+.connector.bottom:hover{transform:translate(-50%,50%) scale(1.3)}
+.connector.left{left:0;top:50%}
+.connector.right{right:0;left:auto;top:50%;transform:translate(50%,-50%)}
+.connector.right:hover{transform:translate(50%,-50%) scale(1.3)}
+
+/* Edit form */
+.edit-form{display:none}
+.card.editing .card-display{display:none}
+.card.editing .edit-form{display:block}
+.edit-form input,.edit-form textarea,.edit-form select{width:100%;margin:3px 0;padding:6px 8px;border:1px solid rgba(0,0,0,.15);border-radius:6px;font-size:12px;background:rgba(255,255,255,.7);font-family:'Nunito',sans-serif;resize:vertical}
+.edit-form textarea{min-height:50px}
+.edit-form select{cursor:pointer}
+.edit-btns{display:flex;gap:6px;margin-top:6px}
+.edit-btns button{flex:1;padding:5px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:'Nunito',sans-serif}
+.btn-save{background:#4caf50;color:#fff}
+.btn-save:hover{background:#43a047}
+.btn-cancel{background:#eee;color:#555}
+.btn-cancel:hover{background:#ddd}
+
+/* Connection label */
+.conn-label{position:absolute;z-index:50;background:rgba(62,42,28,.85);border:1px solid rgba(255,220,160,.2);border-radius:8px;padding:2px 10px;font-size:11px;color:#ffd89e;cursor:pointer;white-space:nowrap;transform:translate(-50%,-50%);user-select:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+
+/* Legend overlay */
+#legend-panel{position:fixed;bottom:16px;left:16px;z-index:1000;background:rgba(62,42,28,.88);backdrop-filter:blur(10px);border-radius:12px;padding:12px 16px;box-shadow:0 4px 16px rgba(0,0,0,.3);border:1px solid rgba(255,220,160,.1);display:flex;gap:14px;align-items:center}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.6)}
+.legend-item .ldot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Responsive */
+@media(max-width:768px){
+  #dashboard{width:180px;padding:12px}
+  #top-panel{padding:10px 14px}
+  #top-panel h1{font-size:22px}
+  #legend-panel{flex-wrap:wrap;gap:8px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="canvas-container">
+    <div id="transform-layer">
+      <svg id="connections-svg"></svg>
+    </div>
+  </div>
+</div>
+
+<!-- Top panel -->
+<div id="top-panel">
+  <div>
+    <h1>🧠 Нейро-Кодекс</h1>
+    <div class="version">Практики вайб-кодинга • v2.0 — PLAYBOOK edition</div>
+  </div>
+  <button id="new-card-btn" onclick="toggleMenu()">+ Карточка</button>
+  <div id="card-menu">
+    <div class="menu-item" onclick="addCard('practice')"><div class="dot" style="background:#7bc77b"></div>Практика (проверено)</div>
+    <div class="menu-item" onclick="addCard('hypothesis')"><div class="dot" style="background:#f0d050"></div>Гипотеза (не проверено)</div>
+    <div class="menu-sep"></div>
+    <div class="menu-item" onclick="addCard('incident')"><div class="dot" style="background:#e07060"></div>Инцидент / Ошибка</div>
+    <div class="menu-item" onclick="addCard('principle')"><div class="dot" style="background:#70b0e0"></div>Принцип</div>
+    <div class="menu-item" onclick="addCard('note')"><div class="dot" style="background:#c090e0"></div>Заметка</div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+  <h3>📊 Зрелость метода</h3>
+  <div id="stats-container"></div>
+  <div id="maturity-bar"><div id="maturity-fill" style="width:0%"></div></div>
+  <div id="maturity-text">Зрелость: 0%</div>
+  <div id="timeline-section">
+    <h4>📅 Хронология</h4>
+    <div id="timeline-entries"></div>
+  </div>
+</div>
+
+<!-- Legend -->
+<div id="legend-panel">
+  <div class="legend-item"><div class="ldot" style="background:#7bc77b"></div>Практика</div>
+  <div class="legend-item"><div class="ldot" style="background:#f0d050"></div>Гипотеза</div>
+  <div class="legend-item"><div class="ldot" style="background:#e07060"></div>Инцидент</div>
+  <div class="legend-item"><div class="ldot" style="background:#70b0e0"></div>Принцип</div>
+  <div class="legend-item"><div class="ldot" style="background:#c090e0"></div>Заметка</div>
+  <div class="legend-item" style="opacity:.4">🔴 нить = породил</div>
+  <div class="legend-item" style="opacity:.4">🔵 нить = группа</div>
+</div>
+
+<script>
+const STORAGE_KEY = 'neuro-codex-v2';
+const app = document.getElementById('app');
+const container = document.getElementById('canvas-container');
+const transformLayer = document.getElementById('transform-layer');
+const svg = document.getElementById('connections-svg');
+const menuEl = document.getElementById('card-menu');
+
+let cards = [], connections = [];
+let panX = 0, panY = 0, scale = 1, maxZ = 100, nextId = 1;
+let isPanning = false, panStart = null;
+let dragCard = null, dragOff = {x:0,y:0};
+let connDrag = null;
+let editingId = null;
+let selectedConnId = null;
+
+function genId(){ return nextId++; }
+function genConnId(){ return 'c' + Date.now() + Math.random().toString(36).slice(2,6); }
+
+// ===== RENDER =====
+function renderAll(){
+  transformLayer.querySelectorAll('.card,.conn-label').forEach(el=>el.remove());
+  svg.innerHTML = '';
+  cards.forEach(renderCard);
+  connections.forEach(renderConnection);
+  updateTransform();
+  updateDashboard();
+}
+
+function renderCard(c){
+  const el = document.createElement('div');
+  el.className = `card card-${c.type}`;
+  el.dataset.id = c.id;
+  el.style.left = c.x + 'px';
+  el.style.top = c.y + 'px';
+  el.style.zIndex = c.zIndex || 10;
+  if(c.rotation) el.style.transform = `rotate(${c.rotation}deg)`;
+
+  const statusCls = c.status === 'confirmed' ? 's-confirmed' : c.status === 'hypothesis' ? 's-hypothesis' : c.status === 'failed' ? 's-failed' : '';
+  const statusIcon = c.status === 'confirmed' ? '✅' : c.status === 'hypothesis' ? '⏳' : c.status === 'failed' ? '❌' : '';
+  const tagLabel = {practice:'ПРАКТИКА',incident:'ИНЦИДЕНТ',principle:'ПРИНЦИП',hypothesis:'ГИПОТЕЗА',note:'ЗАМЕТКА',hub:''}[c.type]||'';
+
+  if(c.type === 'hub'){
+    el.innerHTML = renderHub(c);
+  } else {
+    el.innerHTML = `
+      <div class="card-display">
+        <div class="card-header">
+          <span class="card-tag">${tagLabel}</span>
+          <span class="card-delete" onclick="deleteCard(${c.id})">×</span>
+        </div>
+        <div class="card-title">${esc(c.title)}</div>
+        ${c.desc ? `<div class="card-desc">${esc(c.desc)}</div>` : ''}
+        <div class="card-meta">
+          <span class="card-date">${c.date||''}</span>
+          ${c.status ? `<span class="card-status ${statusCls}" onclick="cycleStatus(${c.id})">${statusIcon}</span>` : ''}
+        </div>
+      </div>
+      <div class="edit-form">
+        <input type="text" class="ef-title" placeholder="Название" value="${esc(c.title)}">
+        <textarea class="ef-desc" placeholder="Описание">${esc(c.desc||'')}</textarea>
+        <input type="text" class="ef-date" placeholder="Дата (напр. День 1)" value="${esc(c.date||'')}">
+        <select class="ef-status">
+          <option value="">Без статуса</option>
+          <option value="confirmed" ${c.status==='confirmed'?'selected':''}>✅ Работает</option>
+          <option value="hypothesis" ${c.status==='hypothesis'?'selected':''}>⏳ Гипотеза</option>
+          <option value="failed" ${c.status==='failed'?'selected':''}>❌ Не работает</option>
+        </select>
+        <div class="edit-btns">
+          <button class="btn-save" onclick="saveEdit(${c.id})">Сохранить</button>
+          <button class="btn-cancel" onclick="cancelEdit(${c.id})">Отмена</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Connectors
+  ['top','bottom','left','right'].forEach(side=>{
+    const dot = document.createElement('div');
+    dot.className = `connector ${side}`;
+    dot.addEventListener('mousedown', e => startConnDrag(e, c.id, side));
+    el.appendChild(dot);
+  });
+
+  // Drag header
+  const header = el.querySelector('.card-header') || el.querySelector('.hub-title');
+  if(header){
+    header.addEventListener('mousedown', e => startCardDrag(e, c, el));
+  }
+  // Double click to edit
+  el.addEventListener('dblclick', e => {
+    if(c.type !== 'hub' && !e.target.classList.contains('card-status') && !e.target.classList.contains('card-delete')){
+      startEdit(c.id, el);
+    }
+  });
+
+  transformLayer.appendChild(el);
+}
+
+function renderHub(c){
+  const confirmed = cards.filter(x=>x.status==='confirmed').length;
+  const hypo = cards.filter(x=>x.status==='hypothesis').length;
+  const failed = cards.filter(x=>x.status==='failed').length;
+  const total = cards.filter(x=>x.type!=='hub').length;
+  return `
+    <div class="card-display" style="cursor:grab">
+      <div class="hub-title">🧠 Нейро-Кодекс</div>
+      <div class="hub-subtitle">Метод Никифорова: вайб-кодинг</div>
+      <div class="hub-row r-confirmed"><span>✅ Работает</span><span>${confirmed}</span></div>
+      <div class="hub-row r-hypothesis"><span>⏳ Гипотеза</span><span>${hypo}</span></div>
+      <div class="hub-row r-failed"><span>❌ Не работает</span><span>${failed}</span></div>
+      <div class="hub-row r-total"><span>Всего карточек</span><span>${total}</span></div>
+    </div>
+  `;
+}
+
+function renderConnection(conn){
+  const from = cards.find(x=>x.id===conn.fromId);
+  const to = cards.find(x=>x.id===conn.toId);
+  if(!from||!to) return;
+  const p1 = getConnPos(from, conn.fromSide);
+  const p2 = getConnPos(to, conn.toSide);
+  const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d', bezier(p1,p2,conn.fromSide,conn.toSide));
+  path.setAttribute('fill','none');
+  path.setAttribute('data-id',conn.id);
+  path.className.baseVal = conn.style || 'yarn-cause';
+  path.addEventListener('click',()=>{ selectedConnId = conn.id; });
+  svg.appendChild(path);
+
+  if(conn.label){
+    const lbl = document.createElement('div');
+    lbl.className = 'conn-label';
+    lbl.dataset.id = conn.id;
+    lbl.textContent = conn.label;
+    lbl.style.left = ((p1.x+p2.x)/2)+'px';
+    lbl.style.top = ((p1.y+p2.y)/2)+'px';
+    transformLayer.appendChild(lbl);
+  }
+}
+
+function getConnPos(card, side){
+  const w = card.type==='hub' ? 300 : 230;
+  const h = card.type==='hub' ? 200 : 120;
+  switch(side){
+    case 'top': return {x:card.x+w/2, y:card.y};
+    case 'bottom': return {x:card.x+w/2, y:card.y+h};
+    case 'left': return {x:card.x, y:card.y+h/2};
+    case 'right': return {x:card.x+w, y:card.y+h/2};
+  }
+}
+
+function bezier(p1,p2,s1,s2){
+  const dx = Math.abs(p2.x-p1.x)*0.5;
+  const dy = Math.abs(p2.y-p1.y)*0.5;
+  const off = Math.max(dx,dy,60);
+  let c1={...p1}, c2={...p2};
+  if(s1==='right') c1.x+=off; else if(s1==='left') c1.x-=off;
+  else if(s1==='bottom') c1.y+=off; else c1.y-=off;
+  if(s2==='right') c2.x+=off; else if(s2==='left') c2.x-=off;
+  else if(s2==='bottom') c2.y+=off; else c2.y-=off;
+  return `M${p1.x},${p1.y} C${c1.x},${c1.y} ${c2.x},${c2.y} ${p2.x},${p2.y}`;
+}
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ===== INTERACTIONS =====
+function toggleMenu(){ menuEl.classList.toggle('open'); }
+
+function addCard(type){
+  const cx = (-panX + window.innerWidth/2) / scale;
+  const cy = (-panY + window.innerHeight/2) / scale;
+  const card = {
+    id: genId(),
+    type,
+    x: cx - 115 + (Math.random()*60-30),
+    y: cy - 60 + (Math.random()*60-30),
+    rotation: (Math.random()*4-2).toFixed(1)*1,
+    zIndex: ++maxZ,
+    title: type==='practice'?'Новая практика':type==='incident'?'Новый инцидент':type==='principle'?'Новый принцип':type==='hypothesis'?'Новая гипотеза':'Заметка',
+    desc: '',
+    date: '',
+    status: type==='practice'?'confirmed':type==='hypothesis'?'hypothesis':''
+  };
+  cards.push(card);
+  renderCard(card);
+  menuEl.classList.remove('open');
+  updateDashboard();
+  save();
+}
+
+function deleteCard(id){
+  if(!confirm('Удалить карточку?')) return;
+  cards = cards.filter(c=>c.id!==id);
+  connections = connections.filter(c=>c.fromId!==id&&c.toId!==id);
+  renderAll();
+  save();
+}
+
+function cycleStatus(id){
+  const c = cards.find(x=>x.id===id);
+  if(!c) return;
+  const states = ['confirmed','hypothesis','failed'];
+  const idx = states.indexOf(c.status);
+  c.status = states[(idx+1)%states.length];
+  renderAll();
+  save();
+}
+
+function startEdit(id, el){
+  editingId = id;
+  el.classList.add('editing');
+}
+
+function saveEdit(id){
+  const el = transformLayer.querySelector(`.card[data-id="${id}"]`);
+  const c = cards.find(x=>x.id===id);
+  if(!el||!c) return;
+  c.title = el.querySelector('.ef-title').value;
+  c.desc = el.querySelector('.ef-desc').value;
+  c.date = el.querySelector('.ef-date').value;
+  c.status = el.querySelector('.ef-status').value;
+  editingId = null;
+  renderAll();
+  save();
+}
+
+function cancelEdit(id){
+  editingId = null;
+  const el = transformLayer.querySelector(`.card[data-id="${id}"]`);
+  if(el) el.classList.remove('editing');
+}
+
+// ===== DRAG =====
+function startCardDrag(e, card, el){
+  if(e.button!==0) return;
+  e.stopPropagation();
+  card.zIndex = ++maxZ;
+  el.style.zIndex = maxZ;
+  dragCard = card;
+  dragOff = { x: e.clientX/scale - card.x + panX/scale, y: e.clientY/scale - card.y + panY/scale };
+}
+
+function startConnDrag(e, cardId, side){
+  e.stopPropagation();
+  e.preventDefault();
+  connDrag = { fromId: cardId, fromSide: side };
+}
+
+container.addEventListener('mousedown', e => {
+  if(e.target === container || e.target === app || e.target.id === 'canvas-container'){
+    isPanning = true;
+    panStart = {x:e.clientX-panX, y:e.clientY-panY};
+    app.classList.add('panning');
+  }
+});
+
+window.addEventListener('mousemove', e => {
+  if(isPanning && panStart){
+    panX = e.clientX - panStart.x;
+    panY = e.clientY - panStart.y;
+    updateTransform();
+  }
+  if(dragCard){
+    dragCard.x = e.clientX/scale - dragOff.x + panX/scale;
+    dragCard.y = e.clientY/scale - dragOff.y + panY/scale;
+    const el = transformLayer.querySelector(`.card[data-id="${dragCard.id}"]`);
+    if(el){ el.style.left=dragCard.x+'px'; el.style.top=dragCard.y+'px'; }
+    updateConnections();
+  }
+});
+
+window.addEventListener('mouseup', e => {
+  if(isPanning){ isPanning=false; app.classList.remove('panning'); save(); }
+  if(dragCard){ dragCard=null; save(); }
+  if(connDrag){
+    const cx = (e.clientX - panX)/scale;
+    const cy = (e.clientY - panY)/scale;
+    const target = findNearestConn(cx, cy, connDrag.fromId);
+    if(target){
+      const fromCard = cards.find(x=>x.id===connDrag.fromId);
+      const toCard = cards.find(x=>x.id===target.cardId);
+      let style = 'yarn-cause';
+      if(fromCard && toCard){
+        if(fromCard.type==='principle'||toCard.type==='principle') style='yarn-group';
+        else if(fromCard.type==='note'||toCard.type==='note') style='yarn-related';
+      }
+      connections.push({
+        id: genConnId(),
+        fromId: connDrag.fromId,
+        toId: target.cardId,
+        fromSide: connDrag.fromSide,
+        toSide: target.side,
+        style,
+        label: ''
+      });
+      renderAll();
+      save();
+    }
+    connDrag = null;
+  }
+});
+
+function findNearestConn(cx, cy, excludeId){
+  let best=null, bestDist=40/scale;
+  cards.forEach(c=>{
+    if(c.id===excludeId) return;
+    ['top','bottom','left','right'].forEach(side=>{
+      const p = getConnPos(c, side);
+      const d = Math.hypot(p.x-cx, p.y-cy);
+      if(d<bestDist){ bestDist=d; best={cardId:c.id, side}; }
+    });
+  });
+  return best;
+}
+
+container.addEventListener('wheel', e => {
+  e.preventDefault();
+  const delta = -e.deltaY*0.001;
+  const newScale = Math.max(0.25,Math.min(3,scale+delta*scale));
+  panX = e.clientX-(e.clientX-panX)*(newScale/scale);
+  panY = e.clientY-(e.clientY-panY)*(newScale/scale);
+  scale = newScale;
+  updateTransform();
+}, {passive:false});
+
+function updateTransform(){
+  transformLayer.style.transform = `translate(${panX}px,${panY}px) scale(${scale})`;
+}
+
+function updateConnections(){
+  connections.forEach(conn=>{
+    const from = cards.find(x=>x.id===conn.fromId);
+    const to = cards.find(x=>x.id===conn.toId);
+    if(!from||!to) return;
+    const p1=getConnPos(from,conn.fromSide);
+    const p2=getConnPos(to,conn.toSide);
+    const path = svg.querySelector(`path[data-id="${conn.id}"]`);
+    if(path) path.setAttribute('d',bezier(p1,p2,conn.fromSide,conn.toSide));
+    const lbl = transformLayer.querySelector(`.conn-label[data-id="${conn.id}"]`);
+    if(lbl){ lbl.style.left=((p1.x+p2.x)/2)+'px'; lbl.style.top=((p1.y+p2.y)/2)+'px'; }
+  });
+}
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', e => {
+  if(e.key==='Delete'&&selectedConnId){
+    connections=connections.filter(c=>c.id!==selectedConnId);
+    selectedConnId=null;
+    renderAll();
+    save();
+  }
+  if(e.key==='Escape'){
+    if(editingId) cancelEdit(editingId);
+    menuEl.classList.remove('open');
+  }
+});
+
+// ===== DASHBOARD =====
+function updateDashboard(){
+  const confirmed = cards.filter(x=>x.status==='confirmed').length;
+  const hypo = cards.filter(x=>x.status==='hypothesis').length;
+  const failed = cards.filter(x=>x.status==='failed').length;
+  const incidents = cards.filter(x=>x.type==='incident').length;
+  const principles = cards.filter(x=>x.type==='principle').length;
+  const total = cards.filter(x=>x.type!=='hub').length;
+  const maturity = total>0 ? Math.round(confirmed/total*100) : 0;
+
+  document.getElementById('stats-container').innerHTML = `
+    <div class="dash-stat"><span class="label"><span class="sdot" style="background:#4caf50"></span>Работает</span><span class="value">${confirmed}</span></div>
+    <div class="dash-stat"><span class="label"><span class="sdot" style="background:#ffc107"></span>Гипотеза</span><span class="value">${hypo}</span></div>
+    <div class="dash-stat"><span class="label"><span class="sdot" style="background:#f44336"></span>Не работает</span><span class="value">${failed}</span></div>
+    <div class="dash-stat"><span class="label"><span class="sdot" style="background:#e07060"></span>Инцидентов</span><span class="value">${incidents}</span></div>
+    <div class="dash-stat"><span class="label"><span class="sdot" style="background:#70b0e0"></span>Принципов</span><span class="value">${principles}</span></div>
+  `;
+  document.getElementById('maturity-fill').style.width = maturity+'%';
+  document.getElementById('maturity-text').textContent = `Зрелость: ${maturity}% (${confirmed}/${total})`;
+
+  // Update hub if exists
+  const hub = cards.find(x=>x.type==='hub');
+  if(hub){
+    const hubEl = transformLayer.querySelector(`.card-hub .card-display`);
+    if(hubEl){
+      hubEl.innerHTML = renderHub(hub).match(/<div class="card-display"[^>]*>([\s\S]*)<\/div>/)?.[1]||'';
+    }
+  }
+
+  // Timeline
+  const timeline = {};
+  cards.forEach(c=>{
+    if(c.date && c.type!=='hub'){
+      if(!timeline[c.date]) timeline[c.date]=0;
+      timeline[c.date]++;
+    }
+  });
+  const entries = Object.entries(timeline).sort();
+  document.getElementById('timeline-entries').innerHTML = entries.map(([d,n])=>
+    `<div class="timeline-entry"><div class="tl-dot"></div>${d}: <span class="tl-count">+${n}</span> карточек</div>`
+  ).join('') || '<div class="timeline-entry" style="opacity:.3">Добавьте даты на карточки</div>';
+}
+
+// ===== PERSISTENCE =====
+let _saveTimer=null;
+let _serverOk=true;
+
+function _getData(){return {cards,connections,panX,panY,scale,maxZ,nextId};}
+function _applyData(d){
+  cards=d.cards||[];connections=d.connections||[];panX=d.panX||0;panY=d.panY||0;scale=d.scale||1;maxZ=d.maxZ||100;nextId=d.nextId||1;
+}
+
+function save(){
+  const data=_getData();
+  // always keep localStorage as fallback
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}
+  // debounced server save
+  if(_saveTimer)clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(()=>{
+    fetch('/codex-data',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+      .then(r=>{_serverOk=r.ok;})
+      .catch(()=>{_serverOk=false;});
+  },2000);
+}
+
+async function load(){
+  // try server first
+  try{
+    const r=await fetch('/codex-data');
+    if(r.ok){
+      const d=await r.json();
+      if(d&&d.cards){_applyData(d);_serverOk=true;return true;}
+    }
+  }catch(e){_serverOk=false;}
+  // fallback to localStorage
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw)return false;
+    _applyData(JSON.parse(raw));
+    return true;
+  }catch(e){return false;}
+}
+
+// ===== DEMO DATA =====
+function createDemoData(){
+  // ---- INCIDENTS (left column) ----
+  const i1={id:genId(),type:'incident',x:30,y:50,rotation:-1.8,zIndex:++maxZ,title:'96 спам-сообщений',desc:'Планировщик запущен без whitelist и rate limit → спам клиентам. Репутационный урон',date:'До рестарта',status:''};
+  const i2={id:genId(),type:'incident',x:40,y:190,rotation:2.1,zIndex:++maxZ,title:'DaData ключи пропущены',desc:'.env скопирован из .env.example, но DADATA_* не добавлены. Промпт 8: 16/16 ✅ при реальной дыре',date:'День 1',status:''};
+  const i3={id:genId(),type:'incident',x:30,y:330,rotation:-1.2,zIndex:++maxZ,title:'Worklog не вёлся',desc:'Промпты 4 и 6 без записей — правило добавлено после их выполнения. Потерян аудит-трейл',date:'День 1',status:''};
+  const i4={id:genId(),type:'incident',x:40,y:470,rotation:1.6,zIndex:++maxZ,title:'Git init от root',desc:'Промпт 2 предписывал раздельные репо, Claude Code создал один общий под root',date:'День 1',status:''};
+  const i5={id:genId(),type:'incident',x:30,y:610,rotation:-2.3,zIndex:++maxZ,title:'Мусор при копипасте',desc:'Escape-коды из браузера → Claude Code интерпретирует как команды. Терминал ломается',date:'День 1',status:''};
+  const i6={id:genId(),type:'incident',x:40,y:750,rotation:1.4,zIndex:++maxZ,title:'FOUNDATION vs DAY1_PROMPTS',desc:'Промпты: 5 таблиц, FOUNDATION: 7. Claude Code прочитал FOUNDATION — правильно. Единственная правда спасла',date:'День 1',status:''};
+  const i7={id:genId(),type:'incident',x:30,y:890,rotation:-1.7,zIndex:++maxZ,title:'Потеря контекста',desc:'Новый Opus-чат не видит файлы проекта → советы на устаревших данных → ошибки → откат. Дважды!',date:'День 1',status:''};
+  const i8={id:genId(),type:'incident',x:40,y:1030,rotation:1.9,zIndex:++maxZ,title:'Секреты в full_project.txt',desc:'Юрий залил дамп с API-ключами, токенами, паролями в чат. Все секреты в контексте LLM',date:'День 1',status:''};
+
+  // ---- HUB (center) ----
+  const hub={id:genId(),type:'hub',x:440,y:400,rotation:0,zIndex:++maxZ,title:'Нейро-Кодекс',desc:'',date:'',status:''};
+
+  // ---- PRINCIPLES (top row) ----
+  const pr1={id:genId(),type:'principle',x:340,y:20,rotation:1.2,zIndex:++maxZ,title:'Shift Left',desc:'Ловить ошибки рано и дёшево. Валидация в коде, а не в голове. CI, validate.sh, diff — всё это shift left',date:'День 1',status:''};
+  const pr2={id:genId(),type:'principle',x:570,y:20,rotation:-1.5,zIndex:++maxZ,title:'Единый источник правды',desc:'FOUNDATION.md побеждает при конфликте. Не плодить источники. Один документ = одна версия = нет споров',date:'День 1',status:''};
+  const pr3={id:genId(),type:'principle',x:800,y:20,rotation:0.8,zIndex:++maxZ,title:'Класс ошибок > конкретная',desc:'CTO устраняет не ошибку, а класс ошибок. ci_validate.sh убирает целый класс «забыл проверить»',date:'День 1',status:''};
+  const pr4={id:genId(),type:'principle',x:1030,y:20,rotation:-1.1,zIndex:++maxZ,title:'Изоляция контекстов',desc:'/clear между промптами. chmod 700. Раздельные .env. Каждый модуль — песочница',date:'День 1',status:''};
+  const pr5={id:genId(),type:'principle',x:1260,y:20,rotation:1.5,zIndex:++maxZ,title:'Разделение ответственности',desc:'Claude Code = руки. Opus = голова. Юрий ≠ курьер. Человек хранит секреты, AI пишет код',date:'День 1',status:''};
+
+  // ---- PRACTICES: Column 1 (x=800) ----
+  const p1={id:genId(),type:'practice',x:800,y:180,rotation:-1.3,zIndex:++maxZ,title:'/clear между промптами',desc:'Claude Code теряет фокус при длинном контексте. /clear = чистый старт. Как мытьё доски между блюдами',date:'День 1',status:'confirmed'};
+  const p2={id:genId(),type:'practice',x:800,y:320,rotation:0.9,zIndex:++maxZ,title:'GitHub как мост',desc:'Публичный репо → raw.githubusercontent → Opus видит файлы. git push заменяет 5 мин копипаста',date:'День 1',status:'confirmed'};
+  const p3={id:genId(),type:'practice',x:800,y:460,rotation:-1.8,zIndex:++maxZ,title:'worklog.md обязательный',desc:'НАЧИНАЮ / ГОТОВО. Восстановление за 2 мин при обрыве. Без журнала невозможно понять что натворил',date:'День 1',status:'confirmed'};
+  const p4={id:genId(),type:'practice',x:800,y:600,rotation:1.5,zIndex:++maxZ,title:'FOUNDATION = единственная правда',desc:'При конфликте — FOUNDATION побеждает. Один документ = одна версия = нет споров',date:'День 1',status:'confirmed'};
+  const p5={id:genId(),type:'practice',x:800,y:740,rotation:-0.7,zIndex:++maxZ,title:'.gitignore ДО первого коммита',desc:'Секреты (.env, *.db) никогда не попадают в git. Боты сканируют GitHub непрерывно',date:'День 1',status:'confirmed'};
+  const p6={id:genId(),type:'practice',x:800,y:880,rotation:2.0,zIndex:++maxZ,title:'IF NOT EXISTS / идемпотентность',desc:'Промпт можно запустить дважды — ничего не сломается. mkdir -p, CREATE IF NOT EXISTS, id || useradd',date:'День 1',status:'confirmed'};
+  const p7={id:genId(),type:'practice',x:800,y:1020,rotation:-1.4,zIndex:++maxZ,title:'Linux-изоляция сервисов',desc:'mn-avito не видит crm-core. chmod 700. Пожар в одной квартире не сжигает весь дом',date:'День 1',status:'confirmed'};
+
+  // ---- PRACTICES: Column 2 (x=1040) ----
+  const p8={id:genId(),type:'practice',x:1040,y:180,rotation:1.8,zIndex:++maxZ,title:'Предикатные проверки',desc:'test -f || echo СТОП. Не предполагать что файл на месте — проверить. Разведка перед атакой',date:'День 1',status:'confirmed'};
+  const p9={id:genId(),type:'practice',x:1040,y:320,rotation:-2.1,zIndex:++maxZ,title:'CLAUDE.md в каждом сервисе',desc:'Что можно, что нельзя, как запускать. Без инструкции AI фантазирует. С инструкцией — выполняет',date:'День 1',status:'confirmed'};
+  const p10={id:genId(),type:'practice',x:1040,y:460,rotation:0.6,zIndex:++maxZ,title:'Планировщики OFF по умолчанию',desc:'cron/APScheduler включается только вручную. Как предохранитель: хочешь стрелять — сними вручную',date:'День 1',status:'confirmed'};
+  const p11={id:genId(),type:'practice',x:1040,y:600,rotation:-1.9,zIndex:++maxZ,title:'Outbox-паттерн',desc:'Сервисы общаются через очередь. Упал CRM — сообщения полежат, дойдут когда встанет. Почтовый ящик',date:'День 1',status:'confirmed'};
+  const p12={id:genId(),type:'practice',x:1040,y:740,rotation:1.3,zIndex:++maxZ,title:'Не копипастить промпты',desc:'«Прочитай DAY1_PROMPTS, Промпт N». Escape-коды = мусор. Одна строка вместо копипаста',date:'День 1',status:'confirmed'};
+  const p13={id:genId(),type:'practice',x:1040,y:880,rotation:-0.9,zIndex:++maxZ,title:'ci_validate.sh — 6 проверок',desc:'Бывшая гипотеза → подтверждена! Проверяет .env, БД, health, таблицы. CI PASS ✅ при каждом push',date:'День 1',status:'confirmed'};
+  const p14={id:genId(),type:'practice',x:1040,y:1020,rotation:1.7,zIndex:++maxZ,title:'Трёхфазный цикл',desc:'Делай → /clear → Ревьюй → /clear → Фикси. Три «человека» за одну сессию. Объективный ревью',date:'День 1',status:'confirmed'};
+
+  // ---- PRACTICES: Column 3 (x=1280) ----
+  const p15={id:genId(),type:'practice',x:1280,y:180,rotation:-1.6,zIndex:++maxZ,title:'diff .env.example vs .env',desc:'grep + sort + diff. Если строка есть в example но нет в .env — видно сразу. Поймало бы DaData',date:'День 1',status:'confirmed'};
+  const p16={id:genId(),type:'practice',x:1280,y:320,rotation:2.2,zIndex:++maxZ,title:'STATE.md — точка входа',desc:'Единая точка входа для агентов. Что сделано, что дальше, текущий контекст. Заменяет «разогрев»',date:'День 1',status:'confirmed'};
+  const p17={id:genId(),type:'practice',x:1280,y:460,rotation:-1.1,zIndex:++maxZ,title:'dump.sh — безопасный дамп',desc:'find с исключением .env, .key, .pem, бинарников. Можно делиться без утечки секретов',date:'День 1',status:'confirmed'};
+  const p18={id:genId(),type:'practice',x:1280,y:600,rotation:0.8,zIndex:++maxZ,title:'Тройной аудит',desc:'Opus + Claude Code + внешний (Gemini). Три пары глаз ловят то, что одна пропускает',date:'День 1',status:'confirmed'};
+  const p19={id:genId(),type:'practice',x:1280,y:740,rotation:-2.0,zIndex:++maxZ,title:'Claude Code не трогает .env',desc:'Менять можно только .env.example. Реальный .env — только руками Юрия. Разделение секретов',date:'День 1',status:'confirmed'};
+  const p20={id:genId(),type:'practice',x:1280,y:880,rotation:1.4,zIndex:++maxZ,title:'Запрещено чинить молча',desc:'Сломал — запиши в worklog что и почему. Молчаливый фикс = потерянный урок. Грабли повторятся',date:'День 1',status:'confirmed'};
+  const p21={id:genId(),type:'practice',x:1280,y:1020,rotation:-0.5,zIndex:++maxZ,title:'Trace-id сквозь цепочку',desc:'UUID от Авито-бота через outbox до CRM. grep по trace-id = весь путь запроса. Детектив за секунду',date:'День 1',status:'confirmed'};
+
+  // ---- PRACTICES: Column 4 (x=1520) ----
+  const p22={id:genId(),type:'practice',x:1520,y:180,rotation:1.0,zIndex:++maxZ,title:'Zellij для SSH',desc:'Сессия переживает обрывы WiFi. zellij attach claude — и ты там где был. Больше никаких потерь',date:'День 1',status:'confirmed'};
+  const p23={id:genId(),type:'practice',x:1520,y:320,rotation:-1.7,zIndex:++maxZ,title:'Разделение ролей',desc:'Claude Code = исполнитель. Opus = советник. Юрий ≠ курьер текстов. Каждый делает своё',date:'День 1',status:'confirmed'};
+  const p24={id:genId(),type:'practice',x:1520,y:460,rotation:2.3,zIndex:++maxZ,title:'Абсолютные пути для venv',desc:'.venv/bin/python вместо source activate. Работает в неинтерактивном shell. Всегда, без сюрпризов',date:'День 1',status:'confirmed'};
+  const p25={id:genId(),type:'practice',x:1520,y:600,rotation:-1.2,zIndex:++maxZ,title:'Неинтерактивный sudo',desc:'sudo -u mn-avito bash -c "..." — одна команда. Интерактивный bash ждёт ввода → Claude Code зависает',date:'День 1',status:'confirmed'};
+  const p26={id:genId(),type:'practice',x:1520,y:740,rotation:0.7,zIndex:++maxZ,title:'Память между чатами',desc:'9 строк в Settings: сервер, стек, GitHub, флоу. Новый чат стартует с контекстом, не как незнакомец',date:'День 1',status:'confirmed'};
+  const p27={id:genId(),type:'practice',x:1520,y:880,rotation:-2.4,zIndex:++maxZ,title:'Четырёхфазный цикл',desc:'Research → Plan → Implement → Validate. Без разведки Claude Code пишет не тот код. Как в армии',date:'День 1',status:'confirmed'};
+
+  // ---- PRACTICES: Column 5 (x=1760) — из RAC v3 ----
+  const p28={id:genId(),type:'practice',x:1760,y:180,rotation:-1.3,zIndex:++maxZ,title:'progress.md — атомарный чеклист',desc:'Шаги по 5-15 мин с галочками [x]. «Работаю над ботом» ≠ значит. «2.3.1 webhooks.py — готово» = значит',date:'День 1',status:'confirmed'};
+  const p29={id:genId(),type:'practice',x:1760,y:320,rotation:1.6,zIndex:++maxZ,title:'PLAYBOOK.md — как мы работаем',desc:'FOUNDATION = что строим. CLAUDE.md = как кодим. PLAYBOOK = как работаем. Три документа = полный контекст',date:'День 1',status:'confirmed'};
+  const p30={id:genId(),type:'practice',x:1760,y:460,rotation:-0.9,zIndex:++maxZ,title:'Ключи НИКОГДА в CLAUDE.md',desc:'CLAUDE.md в публичном GitHub. Если вписать ключи и запушить — весь мир увидит. Только .env',date:'День 1',status:'confirmed'};
+  const p31={id:genId(),type:'practice',x:1760,y:600,rotation:2.1,zIndex:++maxZ,title:'Один коммит = один шаг',desc:'Мелкие коммиты после шага, push после промпта. Шаг 5 сломал шаг 4 — откатил один коммит, не весь промпт',date:'День 1',status:'confirmed'};
+  const p32={id:genId(),type:'practice',x:1760,y:740,rotation:-1.7,zIndex:++maxZ,title:'Публичный репо — это нормально',desc:'Секреты в .gitignore, код не секрет. Приватный = токены, протухание. Публичный = одна ссылка, любой читает',date:'День 1',status:'confirmed'};
+  const p33={id:genId(),type:'practice',x:1760,y:880,rotation:0.8,zIndex:++maxZ,title:'Статус-страница для телефона',desc:'nikiforov-bots.ru/status-... показывает progress.md. Проверить прогресс из метро без SSH',date:'День 1',status:'confirmed'};
+  const p34={id:genId(),type:'practice',x:1760,y:1020,rotation:-2.2,zIndex:++maxZ,title:'Скрытые файлы в WinSCP',desc:'Ctrl+Alt+H показывает .env, .gitignore. Юрий не видел .env — одна клавиша решает',date:'День 1',status:'confirmed'};
+
+  // ---- HYPOTHESES (bottom center) ----
+  const h1={id:genId(),type:'hypothesis',x:400,y:800,rotation:-1.8,zIndex:++maxZ,title:'PRACTICES.md в корне проекта',desc:'Эволюционировал в PLAYBOOK.md. Проверить: читает ли Claude Code перед работой?',date:'День 1',status:'hypothesis'};
+  const h2={id:genId(),type:'hypothesis',x:600,y:800,rotation:1.3,zIndex:++maxZ,title:'GitHub Actions CI — на День 6',desc:'Автопроверки при push. Сейчас health неполный — будет ложно падать. Включить когда сервисы работают',date:'День 1',status:'hypothesis'};
+  const h3={id:genId(),type:'hypothesis',x:400,y:940,rotation:2.0,zIndex:++maxZ,title:'Skill-файлы для переиспользования',desc:'tech-coordinator, foundation-auditor как навыки. Следующий проект = тот же процесс без изобретения колеса',date:'День 1',status:'hypothesis'};
+
+  // ---- NOTES ----
+  const n1={id:genId(),type:'note',x:400,y:660,rotation:-2.5,zIndex:++maxZ,title:'',desc:'День 1: 8 промптов, 0 откатов, 8 инцидентов → 34 практики + 5 принципов. RAC v3 = 35 правил! 🔥',date:'1 марта 2026',status:''};
+  const n2={id:genId(),type:'note',x:620,y:660,rotation:1.8,zIndex:++maxZ,title:'',desc:'Три документа: PLAYBOOK (26 правил) + RAC v3 (35 правил) + Нейро-Кодекс (визуальная карта). Система! ☝️',date:'1 марта 2026',status:''};
+
+  cards = [
+    i1,i2,i3,i4,i5,i6,i7,i8,
+    hub,
+    pr1,pr2,pr3,pr4,pr5,
+    p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,
+    h1,h2,h3,
+    n1,n2
+  ];
+
+  // ---- CONNECTIONS ----
+  connections = [
+    // Incidents → Practices (red yarn — "породил")
+    {id:genConnId(),fromId:i1.id,toId:p10.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:'породил'},
+    {id:genConnId(),fromId:i2.id,toId:p15.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:'породил'},
+    {id:genConnId(),fromId:i2.id,toId:p13.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:''},
+    {id:genConnId(),fromId:i3.id,toId:p3.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:'породил'},
+    {id:genConnId(),fromId:i3.id,toId:p20.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:''},
+    {id:genConnId(),fromId:i4.id,toId:p4.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:''},
+    {id:genConnId(),fromId:i5.id,toId:p12.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:'породил'},
+    {id:genConnId(),fromId:i6.id,toId:p4.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:''},
+    {id:genConnId(),fromId:i7.id,toId:p2.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:'породил'},
+    {id:genConnId(),fromId:i7.id,toId:p16.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:''},
+    {id:genConnId(),fromId:i7.id,toId:p26.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:''},
+    {id:genConnId(),fromId:i7.id,toId:p33.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:''},
+    {id:genConnId(),fromId:i8.id,toId:p17.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:'породил'},
+    {id:genConnId(),fromId:i8.id,toId:p19.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:''},
+    {id:genConnId(),fromId:i8.id,toId:p30.id,fromSide:'right',toSide:'left',style:'yarn-cause',label:''},
+    // Practices → Principles (blue yarn — grouping)
+    {id:genConnId(),fromId:p1.id,toId:pr4.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p7.id,toId:pr4.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p19.id,toId:pr4.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p30.id,toId:pr4.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p8.id,toId:pr1.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p13.id,toId:pr1.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p15.id,toId:pr1.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p4.id,toId:pr2.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p9.id,toId:pr2.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p16.id,toId:pr2.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p29.id,toId:pr2.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p6.id,toId:pr3.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p13.id,toId:pr3.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p23.id,toId:pr5.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p19.id,toId:pr5.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p25.id,toId:pr5.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+    {id:genConnId(),fromId:p31.id,toId:pr5.id,fromSide:'top',toSide:'bottom',style:'yarn-group',label:''},
+  ];
+
+  panX = 50; panY = 30; scale = 0.5;
+}
+
+// ===== INIT =====
+async function init(){
+  if(!(await load())) createDemoData();
+  renderAll();
+}
+
+init();
+</script>
+</body>
+</html>
