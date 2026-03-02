@@ -4,6 +4,26 @@
 
 ---
 
+## 2026-03-02 — ГОТОВО: Промпт 4 — Тесты POST /leads ✅
+Результат:
+- pytest + pytest-asyncio установлены
+- tests/__init__.py + tests/test_leads.py созданы
+- 10 тестов — все зелёные:
+  1. test_create_lead_success (201, client_id)
+  2. test_create_lead_wrong_key (403)
+  3. test_create_lead_missing_key (403)
+  4. test_idempotency_duplicate (один client_id, 1 клиент в БД)
+  5. test_merge_by_phone (200 merged, 1 клиент)
+  6. test_merge_by_inn (200 merged)
+  7. test_client_name_mapping (client_name→name)
+  8. test_history_created_on_new_lead (lead_created, auto=1)
+  9. test_upsert_same_source (200 updated, phone обновился)
+  10. test_bad_payload (422)
+- httpx ASGITransport для тестов (httpx 0.28+)
+Следующий: Промпт 5 — Финальная валидация Дня 2
+
+---
+
 ## 2026-03-02 — АУДИТ ENDPOINT ПРОЙДЕН ✅
 Результат аудита (Фаза 2): все 10 проверок пройдены, ручные тесты прошли.
 - X-Internal-Key → 403: ✅
