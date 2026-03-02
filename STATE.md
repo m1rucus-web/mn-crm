@@ -6,11 +6,10 @@
 2026-03-02
 
 ## Где мы
-День 1 завершён. Аудит-патч применён. Начинаем День 2.
+День 2 завершён. POST /api/v1/leads работает (идемпотентность, дедупликация, merge, 10 тестов).
 
 ## Что дальше
-День 2 — CRM: POST /api/v1/leads (идемпотентность, дедупликация, merge).
-Потом День 3 — CRM CRUD + HTMX-дашборд + воронка.
+День 3 — CRM CRUD + HTMX-дашборд + воронка.
 Потом День 4 — Авито-бот webhooks.
 
 ## Открытые проблемы
@@ -32,6 +31,7 @@
 - День 1: каркас, venv, БД (7+8 таблиц), /health (8 полей), settings, logging
 - АУДИТ-1: employees.json, /health расширен, CLAUDE.md синхронизированы, дубли удалены, CI правила
 - АУДИТ-2: ci_validate.sh (6 проверок), GitHub Actions workflow
+- День 2: ORM-модели (8), idempotency + lead_merger, POST /api/v1/leads, 10 тестов — всё зелёное
 
 ## Стек
 Python 3.12, FastAPI, SQLite WAL, SQLAlchemy async, HTMX, Nginx
