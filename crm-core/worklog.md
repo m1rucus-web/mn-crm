@@ -4,6 +4,21 @@
 
 ---
 
+## 2026-03-02 — НАЧИНАЮ: Промпт 2 Фаза 1 — Сервисы (idempotency + lead_merger)
+Что делаю: создаю src/services/idempotency.py и src/services/lead_merger.py
+Изменения: src/services/__init__.py, src/services/idempotency.py, src/services/lead_merger.py (новые файлы)
+Зависимости: models.py (Client, ProcessedKey, History)
+Риски: неверная логика merge (перезапись заполненных полей)
+
+## 2026-03-02 — ГОТОВО: Промпт 2 Фаза 1 — Сервисы (idempotency + lead_merger) ✅
+Результат:
+- idempotency.py: check_idempotency (SELECT → json.loads), save_idempotency (json.dumps → INSERT)
+- lead_merger.py: find_duplicate (phone ИЛИ inn, WHERE deleted_at IS NULL), merge_lead (обновляет только пустые поля, history action='lead_merged' auto=1)
+- Проверка: `from src.services.idempotency import ...; from src.services.lead_merger import ... → Сервисы OK`
+Коммит: feat: idempotency + lead_merger сервисы
+
+---
+
 ## 2026-03-02 — АУДИТ ORM ПРОЙДЕН ✅
 Результат аудита (Фаза 2): все 8 моделей, 96 полей — полностью совпадают с init_db.py и FOUNDATION.md §6.
 Расхождений нет. Единственное примечание: max_clients=20 в models.py (решение 2 марта) vs 50 в init_db.py — осознанное решение, не расхождение.

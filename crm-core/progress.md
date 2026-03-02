@@ -21,8 +21,8 @@
 - [x] 1.2.1 settings.py (pydantic-settings из .env) ✅
 - [x] 1.2.2 db.py (SQLAlchemy async engine) ✅
 - [x] 1.2.3 models.py (ORM-модели) ✅
-- [ ] 1.2.4 idempotency.py (проверка idempotency_key в processed_keys)
-- [ ] 1.2.5 lead_merger.py (дедупликация по phone/inn → merge)
+- [ ] 1.2.4 idempotency.py (проверка idempotency_key в processed_keys) ← В РАБОТЕ (Фаза 1 done, ожидает аудит)
+- [ ] 1.2.5 lead_merger.py (дедупликация по phone/inn → merge) ← В РАБОТЕ (Фаза 1 done, ожидает аудит)
 - [ ] 1.2.6 leads.py endpoint (X-Internal-Key, UPSERT, маппинг client_name→name)
 - [ ] 1.2.7 Тесты: дубликат, битый payload, неверный ключ, merge по phone
 
