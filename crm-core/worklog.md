@@ -4,6 +4,26 @@
 
 ---
 
+## 2026-03-02 — НАЧИНАЮ: Промпт 3 Фаза 1 — POST /api/v1/leads endpoint
+Что делаю: создаю src/api/leads.py (POST /api/v1/leads) с авторизацией, идемпотентностью, дедупликацией, UPSERT
+Изменения: src/api/__init__.py (новый), src/api/leads.py (новый), src/main.py (подключение router)
+Зависимости: models.py, idempotency.py, lead_merger.py, settings.py, db.py
+Риски: неверный маппинг полей, неправильный порядок проверок
+
+## 2026-03-02 — ГОТОВО: Промпт 3 Фаза 1 — POST /api/v1/leads endpoint ✅
+Результат:
+- LeadRequest Pydantic-схема (22 поля)
+- POST /leads: X-Internal-Key → 403, idempotency check, find_duplicate (phone/inn), UPSERT (source+source_id)
+- Маппинг: client_name→name, last_message_at→source_last_message_at
+- responsible_id не назначается (NULL)
+- History: lead_created (INSERT), lead_updated (UPSERT UPDATE), lead_merged (через lead_merger)
+- Логирование: trace_id, source_id, результат
+- Router подключён в main.py
+- Проверка: сервер стартует, /api/v1/leads в OpenAPI
+Коммит: feat: POST /api/v1/leads — endpoint с авторизацией, idempotency, merge, history
+
+---
+
 ## 2026-03-02 — АУДИТ СЕРВИСОВ ПРОЙДЕН ✅
 Результат аудита (Фаза 2): все 13 проверок пройдены.
 - idempotency.py: check/save корректны, json.loads/json.dumps, ProcessedKey модель

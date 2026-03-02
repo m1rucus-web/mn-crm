@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from loguru import logger
 from sqlalchemy import text
 
+from src.api.leads import router as leads_router
 from src.db import async_session
 from src.settings import settings
 
@@ -54,6 +55,8 @@ app = FastAPI(
     version=settings.app_version,
     lifespan=lifespan,
 )
+
+app.include_router(leads_router)
 
 
 @app.get("/health")
