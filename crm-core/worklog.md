@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-03-02 — НАЧИНАЮ: Промпт 1 Фаза 1 — ORM-модели
+Что делаю: создаю src/models.py — 8 ORM-моделей строго по FOUNDATION §6 + init_db.py
+Изменения: src/models.py (новый файл)
+Зависимости: db.py, init_db.py, FOUNDATION.md
+Риски: расхождение типов/DEFAULT между init_db.py и models.py
+
+## 2026-03-02 — ГОТОВО: Промпт 1 Фаза 1 — ORM-модели ✅
+Результат: 8 моделей (Client, Employee, History, Task, OnboardingDocument, ProcessedKey, OutboxMessage, DripEvent).
+Все поля строго по init_db.py. max_clients=20 (решение 2 марта). JSON-поля → Text. UNIQUE(source, source_id) через __table_args__. ProcessedKey.idempotency_key = primary_key.
+Проверка: `from src.models import ... → 8 моделей OK`
+
+---
+
 ## 2026-03-02 — Трёхфазный цикл добавлен в CLAUDE.md
 Что сделал: добавил секцию «Трёхфазный цикл (на каждый промпт)» после «Обязательные проверки после каждого промпта»
 Файлы: CLAUDE.md
