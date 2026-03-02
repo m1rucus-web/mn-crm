@@ -4,6 +4,16 @@
 
 ---
 
+## 2026-03-02 — АУДИТ СЕРВИСОВ ПРОЙДЕН ✅
+Результат аудита (Фаза 2): все 13 проверок пройдены.
+- idempotency.py: check/save корректны, json.loads/json.dumps, ProcessedKey модель
+- lead_merger.py: find_duplicate (phone ИЛИ inn, deleted_at IS NULL), merge_lead (не перезаписывает заполненные, history auto=1, updated_at)
+- py_compile обоих файлов: OK
+- Соответствие FOUNDATION §7: полное
+Действие (Фаза 3): исправлений не требуется. audit_current.md удалён. progress.md обновлён.
+
+---
+
 ## 2026-03-02 — НАЧИНАЮ: Промпт 2 Фаза 1 — Сервисы (idempotency + lead_merger)
 Что делаю: создаю src/services/idempotency.py и src/services/lead_merger.py
 Изменения: src/services/__init__.py, src/services/idempotency.py, src/services/lead_merger.py (новые файлы)
