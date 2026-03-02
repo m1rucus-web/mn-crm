@@ -101,6 +101,7 @@ Systemd: `mn-avito-bot.service`
 ## ⚡ Протокол работы (ОБЯЗАТЕЛЬНО)
 
 ### При старте каждой сессии:
+0. **Проверить git:** `cd /opt/mn && git add -A && git diff --cached --quiet || git commit -m 'fix: незакоммиченные файлы' && git diff origin/main --quiet || git push`
 1. **ПЕРВЫМ ДЕЛОМ** прочитай `progress.md` и `worklog.md`
 2. Если в worklog.md есть запись «НАЧИНАЮ» без парного «ГОТОВО» — это незавершённый шаг. Проверь его состояние, доложи, потом продолжай.
 3. Прочитай текущий шаг в progress.md → это твоя задача.
